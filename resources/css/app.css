@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap') layer(base);
+@import 'prismjs/themes/prism.min.css';
+@import 'tailwindcss';
+
+/* Mendefinisikan lokasi file blade agar tailwind bisa memproses class-nya */
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-*: initial;
+  --font-outfit: Outfit, sans-serif;
+
+  /* --- PALET WARNA ORANGE SEOV DETECH --- */
+  --color-brand-50: #fff6ed;
+  --color-brand-100: #ffead5;
+  --color-brand-200: #fddcab;
+  --color-brand-300: #feb273;
+  --color-brand-400: #fd853a;
+  --color-brand-500: #fb6514; /* Orange Utama sesuai logo */
+  --color-brand-600: #ec4a0a;
+  --color-brand-700: #c4320a;
+  --color-brand-800: #9c2a10;
+  --color-brand-900: #7e2410;
+  --color-brand-950: #511c10;
+
+  /* Warna dasar lainnya */
+  --color-white: #ffffff;
+  --color-black: #101828;
+  --color-gray-50: #f9fafb;
+  --color-gray-200: #e4e7ec;
+
+  --shadow-theme-sm: 0px 1px 3px 0px rgba(16, 24, 40, 0.1), 0px 1px 2px 0px rgba(16, 24, 40, 0.06);
+}
+
+@layer base {
+  *, ::after, ::before {
+    border-color: var(--color-gray-200, currentColor);
+  }
+  body {
+    @apply relative font-normal font-outfit z-1 bg-gray-50;
+  }
+}
+
+/* Mengubah Tombol Dashboard & Login agar otomatis Orange */
+@utility btn-primary {
+  @apply bg-brand-500 text-white hover:bg-brand-600 py-2.5 px-5 rounded-xl font-semibold transition-all shadow-md active:scale-95 flex items-center justify-center gap-2;
+}
+
+/* Sidebar & Menu Navigation */
+@utility menu-item-active {
+  @apply bg-brand-50 text-brand-500 dark:bg-brand-500/[0.12] dark:text-brand-400;
+}
+
+@utility menu-item-icon-active {
+  @apply text-brand-500 dark:text-brand-400;
+}
+
+/* Custom Checkbox */
+.tableCheckbox:checked ~ span {
+  @apply border-brand-500 bg-brand-500;
+}

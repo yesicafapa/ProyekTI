@@ -1,0 +1,109 @@
+<template x-teleport="body">
+    <div x-show="openModal" 
+         class="fixed inset-0 z-[100000] flex items-start justify-center overflow-y-auto bg-slate-900/60 backdrop-blur-sm p-4 py-10 md:py-20"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-cloak>
+        
+        <div x-show="openModal"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95 translate-y-10"
+             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+             @click.away="openModal = false"
+             class="relative my-auto w-full max-w-4xl rounded-[2.5rem] bg-white shadow-2xl dark:bg-[#1a2233] border border-white/10">
+            
+            {{-- Header Modal --}}
+            <div class="flex items-center justify-between border-b border-slate-100 bg-white px-10 py-8 dark:border-slate-800 dark:bg-[#1a2233] rounded-t-[2.5rem]">
+                <div class="flex items-center gap-5">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500 text-white shadow-lg shadow-orange-500/20">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-black tracking-tight text-slate-800 dark:text-white" x-text="editMode ? 'Edit Data Admin' : 'Tambah Admin Baru'"></h3>
+                        <p class="text-xs font-medium text-slate-400">Kelola informasi akun administrator sistem.</p>
+                    </div>
+                </div>
+                <button @click="openModal = false" class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all dark:bg-slate-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                        <path d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="p-10">
+                <form :action="actionUrl" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <template x-if="editMode"><input type="hidden" name="_method" value="PUT"></template>
+
+                    <div class="grid grid-cols-1 gap-10 md:grid-cols-12">
+                        {{-- Kolom Kiri --}}
+                        <div class="space-y-6 md:col-span-7">
+                            <div>
+                                <label class="mb-2 block text-[10px] font-black uppercase tracking-widest text-slate-400">Nama Lengkap</label>
+                                <input type="text" name="nama" x-model="formData.nama" placeholder="Nama Admin" required 
+                                    class="w-full rounded-2xl border-2 border-slate-100 bg-slate-50 p-4 text-sm font-bold outline-none focus:border-orange-500 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white transition-all">
+                            </div>
+                            
+                            <div>
+                                <label class="mb-2 block text-[10px] font-black uppercase tracking-widest text-slate-400">Alamat Email</label>
+                                <input type="email" name="email" x-model="formData.email" placeholder="admin@seovdetech.com" required 
+                                    class="w-full rounded-2xl border-2 border-slate-100 bg-slate-50 p-4 text-sm font-bold outline-none focus:border-orange-500 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white transition-all">
+                            </div>
+
+                            <div>
+                                <label class="mb-2 block text-[10px] font-black uppercase tracking-widest text-slate-400">Kata Sandi</label>
+                                <input type="password" name="password" x-model="formData.password" :required="!editMode" placeholder="********" 
+                                    class="w-full rounded-2xl border-2 border-slate-100 bg-slate-50 p-4 text-sm font-bold outline-none focus:border-orange-500 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white transition-all">
+                                <p x-show="editMode" class="mt-2 text-[10px] text-slate-400 italic font-medium">*Kosongkan jika tidak ingin mengubah password.</p>
+                            </div>
+                        </div>
+
+                        {{-- Kolom Kanan --}}
+                        <div class="space-y-6 md:col-span-5">
+                            <div>
+                                <label class="mb-2 block text-[10px] font-black uppercase tracking-widest text-slate-400">Level Akses</label>
+                                <select name="level" x-model="formData.level" 
+                                        class="w-full rounded-2xl border-2 border-slate-100 bg-slate-50 p-4 text-sm font-bold outline-none focus:border-orange-500 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white transition-all">
+                                    <option value="admin">ADMIN</option>
+                                    <option value="super admin">SUPER ADMIN</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="mb-2 block text-[10px] font-black uppercase tracking-widest text-slate-400">Foto Profil Admin</label>
+                                <div class="group relative aspect-square w-full max-w-[240px] mx-auto overflow-hidden rounded-[2.5rem] border-2 border-dashed border-slate-200 bg-slate-50 hover:border-orange-500 transition-all dark:border-slate-700 dark:bg-slate-800/50">
+                                    {{-- Preview Image --}}
+                                    <img :src="imageUrl" x-show="imageUrl" class="h-full w-full object-cover">
+                                    
+                                    {{-- Placeholder if No Image --}}
+                                    <div x-show="!imageUrl" class="flex h-full flex-col items-center justify-center text-slate-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mb-3 h-12 w-12 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        <span class="text-[10px] font-black uppercase tracking-widest text-center px-4">Klik Untuk Upload Foto</span>
+                                    </div>
+
+                                    <input type="file" name="foto" class="absolute inset-0 cursor-pointer opacity-0" 
+                                        @change="const file = $event.target.files[0]; if (file) imageUrl = URL.createObjectURL(file)">
+                                </div>
+                                <p class="mt-3 text-center text-[10px] font-medium text-slate-400 uppercase tracking-tighter">*Format: JPG, PNG, WEBP (Maks. 2MB)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Footer Modal --}}
+                    <div class="mt-12 flex items-center justify-end gap-6 border-t border-slate-100 pt-10 dark:border-slate-800">
+                        <button type="button" @click="openModal = false" class="text-xs font-black text-slate-400 hover:text-red-500 uppercase tracking-[0.2em] transition-colors">Batalkan</button>
+                        <button type="submit" class="rounded-2xl bg-orange-500 px-14 py-5 text-xs font-black uppercase tracking-[0.2em] text-white shadow-2xl shadow-orange-500/40 hover:bg-orange-600 active:scale-95 transition-all">
+                            <span x-text="editMode ? 'Update Data' : 'Simpan Admin'"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</template>
