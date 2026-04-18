@@ -10,80 +10,14 @@ use App\Http\Controllers\Admin\{
 
 /*
 |--------------------------------------------------------------------------
-| 1. FRONTEND DATA HELPER (DUMMY DATA)
-|--------------------------------------------------------------------------
-*/
-
-if (!function_exists('getDummyData')) {
-    function getDummyData() {
-        return [
-            'portofolios' => collect([
-                (object)[
-                    'judul' => 'Psikotes Gratis',
-                    'slug' => 'psikotes-gratis',
-                    'deskripsi' => 'Pengembangan sistem ujian psikotes berbasis web untuk mempermudah proses penilaian secara digital dan akurat.',
-                    'gambar' => 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&w=2068',
-                    'link' => '#',
-                    'created_at' => now()->subDays(10)
-                ],
-                (object)[
-                    'judul' => 'SIAKAD PNM',
-                    'slug' => 'siakad-pnm',
-                    'deskripsi' => 'Solusi manajemen akademik terpadu untuk pengelolaan data mahasiswa dan kurikulum pendidikan secara efisien.',
-                    'gambar' => 'https://images.unsplash.com/photo-1454165833762-0102b282f06b?q=80&w=2070',
-                    'link' => '#',
-                    'created_at' => now()->subMonths(2)
-                ],
-                (object)[
-                    'judul' => 'SEO Optimization',
-                    'slug' => 'seo-optimization',
-                    'deskripsi' => 'Meningkatkan trafik website hingga 200% dengan teknik SEO modern dan optimasi keyword yang tepat.',
-                    'gambar' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015',
-                    'link' => '#',
-                    'created_at' => now()->subMonths(5)
-                ]
-            ]),
-            'artikels' => collect([
-                (object)[
-                    'id' => 1,
-                    'judul' => 'Masa Depan AI di Tahun 2026',
-                    'slug' => 'masa-depan-ai',
-                    'konten' => '<p>Teknologi AI semakin berkembang pesat dan mulai menggeser cara kerja konvensional di industri kreatif.</p>',
-                    'thumbnail' => 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2070',
-                    'created_at' => now()
-                ],
-                (object)[
-                    'id' => 2,
-                    'judul' => 'Optimasi Website Modern 2026',
-                    'slug' => 'optimasi-website-2026',
-                    'konten' => '<p>Bagaimana cara menjaga performa website tetap stabil dengan teknologi caching terbaru.</p>',
-                    'thumbnail' => 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2072',
-                    'created_at' => now()->subDays(2)
-                ],
-                (object)[
-                    'id' => 3,
-                    'judul' => 'Keamanan Siber untuk Bisnis',
-                    'slug' => 'keamanan-siber-bisnis',
-                    'konten' => '<p>Langkah praktis melindungi data perusahaan dari serangan siber di era digital modern.</p>',
-                    'thumbnail' => 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070',
-                    'created_at' => now()->subDays(5)
-                ]
-            ])
-        ];
-    }
-}
-
-/*
-|--------------------------------------------------------------------------
-| 2. FRONTEND ROUTES (FIXED)
+| 1. FRONTEND ROUTES (DATABASE DRIVEN)
 |--------------------------------------------------------------------------
 */
 
 // Halaman Home Utama
 Route::get('/', function () {
-    $data = getDummyData();
-    $portofolios = $data['portofolios']->take(6);
-    $artikels = $data['artikels']->take(3); 
+    $artikels = \App\Models\Artikel::where('status', 1)->latest()->take(5)->get(); 
+    $portofolios = \App\Models\Portofolio::latest()->take(6)->get();
     $faqs = \App\Models\Faq::all(); 
     $testimonis = \App\Models\Testimoni::where('status', 1)->latest()->get();
     
@@ -93,71 +27,69 @@ Route::get('/', function () {
 // --- START FRONTEND GROUP ---
 Route::prefix('frontend')->name('frontend.')->group(function () {
     
+    // List Portofolio
     Route::get('/portofolio', function () {
-        $data = getDummyData();
-        $portofolios = $data['portofolios'];
-        $artikels = $data['artikels']; 
+        $portofolios = \App\Models\Portofolio::latest()->get();
+        $artikels = \App\Models\Artikel::where('status', 1)->latest()->take(3)->get(); 
         $testimonis = \App\Models\Testimoni::where('status', 1)->latest()->get();
-        return view('pages.frontend.sections.portfolio', compact('portofolios', 'artikels', 'testimonis'));
+        $faqs = \App\Models\Faq::all();
+        return view('pages.frontend.sections.portfolio', compact('portofolios', 'artikels', 'testimonis', 'faqs'));
     })->name('portofolio.index');
 
-    Route::get('/portofolio/{slug}', function ($slug) {
-        $data = getDummyData();
-        $portofolio = $data['portofolios']->firstWhere('slug', $slug);
-        $artikels = $data['artikels']; 
+    // Detail Portofolio - FIXED ALL ERRORS
+    Route::get('/portofolio/{id}', function ($id) {
+        $portofolio = \App\Models\Portofolio::findOrFail($id);
+        
+        // Mengambil semua data pendukung karena template detail meng-include section lain
+        $portofolios = \App\Models\Portofolio::latest()->get(); 
         $testimonis = \App\Models\Testimoni::where('status', 1)->latest()->get();
-        if (!$portofolio) abort(404);
-        return view('pages.frontend.sections.portfolio_detail', compact('portofolio', 'artikels', 'testimonis'));
+        $artikels = \App\Models\Artikel::where('status', 1)->latest()->take(3)->get();
+        $faqs = \App\Models\Faq::all(); 
+
+        return view('pages.frontend.sections.portfolio_detail', compact(
+            'portofolio', 
+            'portofolios', 
+            'testimonis', 
+            'artikels',
+            'faqs'
+        ));
     })->name('portofolio.detail');
 
+    // FIX HALAMAN LIST BLOG: Mengambil data asli database
     Route::get('/blog', function () {
-        $data = getDummyData();
-        $artikels = $data['artikels'];
-        $portofolios = $data['portofolios'];
-        $testimonis = \App\Models\Testimoni::where('status', 1)->latest()->get();
-        return view('pages.frontend.sections.blog', compact('artikels', 'portofolios', 'testimonis'));
+        $artikels = \App\Models\Artikel::where('status', 1)->latest()->paginate(9);
+        return view('pages.frontend.sections.blog', compact('artikels'));
     })->name('blog.index');
 
-    Route::get('/blog/{slug}', function ($slug) {
-        $data = getDummyData();
-        $artikel = $data['artikels']->firstWhere('slug', $slug);
-        $artikels = $data['artikels']; 
-        $portofolios = $data['portofolios'];
-        $testimonis = \App\Models\Testimoni::where('status', 1)->latest()->get();
-        if (!$artikel) abort(404);
-        return view('pages.frontend.sections.blog_detail', compact('artikel', 'artikels', 'portofolios', 'testimonis'));
-    })->name('blog.detail');
+    // 2. DETAIL BLOG: FIX URL & QUERY
+    // Cukup pakai '/blog/{id}', karena sudah dibungkus prefix 'frontend'
+    Route::get('/blog/{id}', function ($id) {
+        // Gunakan findOrFail agar kalau ID tidak ada langsung muncul 404 (bukan error SQL)
+        $artikel = \App\Models\Artikel::findOrFail($id);
+        
+        // Ambil artikel lain untuk section "More Insights"
+        $artikels = \App\Models\Artikel::where('id', '!=', $id)
+                                    ->where('status', 1) 
+                                    ->latest()
+                                    ->take(3)
+                                    ->get();
 
-    // Rute Utama Halaman Kontak
-    // 1. Halaman Form Kontak
-    // Nama lengkap rute ini: frontend.contact
+        return view('pages.frontend.sections.blog_detail', compact('artikel', 'artikels'));
+    })->name('blog.detail'); // Nama route jadi frontend.blog.detail
+
+    // Rute Kontak (Tetap menggunakan database)
     Route::get('/contact-us', function () {
         $testimonis = \App\Models\Testimoni::where('status', 1)->latest()->get();
-        $data = getDummyData(); 
-        return view('pages.frontend.sections.contact', [
-            'testimonis' => $testimonis,
-            'artikels' => $data['artikels'] ?? [],
-            'portofolios' => $data['portofolios'] ?? []
-        ]);
+        $artikels = \App\Models\Artikel::where('status', 1)->latest()->take(3)->get();
+        return view('pages.frontend.sections.contact', compact('testimonis', 'artikels'));
     })->name('contact');
 
-    // 2. Proses Submit (Bypass Controller agar tidak error method store)
-    // Nama lengkap rute ini: frontend.contact.send
     Route::post('/contact-send', function (\Illuminate\Http\Request $request) {
-        // Logika simpan data bisa ditaruh di sini nanti
         return redirect()->route('frontend.contact.success');
     })->name('contact.send');
 
-    // 3. Halaman Sukses
-    // Nama lengkap rute ini: frontend.contact.success
     Route::get('/contact-success', function () {
-        $testimonis = \App\Models\Testimoni::where('status', 1)->latest()->get();
-        $data = getDummyData(); 
-        return view('pages.frontend.sections.contact_success', [
-            'testimonis' => $testimonis,
-            'artikels' => $data['artikels'] ?? [],
-            'portofolios' => $data['portofolios'] ?? []
-        ]);
+        return view('pages.frontend.sections.contact_success');
     })->name('contact.success');
 
 }); // <--- PENUTUP FRONTEND GROUP YANG TADI HILANG

@@ -47,38 +47,48 @@
                 <x-header.notification-dropdown />
             </div>
 
-            <div class="relative">
-                <button @click="isUserMenuOpen = !isUserMenuOpen" @click.away="isUserMenuOpen = false" class="flex items-center gap-3 focus:outline-none">
-                    <span class="hidden text-right xl:block">
-                        <span class="block text-sm font-medium text-gray-800 dark:text-white">{{ Auth::user()->nama }}</span>
-                        <span class="block text-xs text-gray-500">{{ ucfirst(Auth::user()->level) }}</span>
-                    </span>
+           <div class="relative">
+    <button @click="isUserMenuOpen = !isUserMenuOpen" @click.away="isUserMenuOpen = false" class="flex items-center gap-3 focus:outline-none">
+        <span class="hidden text-right xl:block">
+            <span class="block text-sm font-bold text-gray-800 dark:text-white">{{ Auth::user()->nama }}</span>
+            <span class="block text-[10px] font-black uppercase tracking-widest text-orange-500">{{ Auth::user()->level }}</span>
+        </span>
 
-                    {{-- FIX FOTO PROFIL DI SINI --}}
-                    @if(Auth::user()->foto)
-                        <img src="{{ asset('storage/' . Auth::user()->foto) }}" 
-                             class="w-10 h-10 rounded-full object-cover shadow-sm border border-gray-100 dark:border-gray-800" 
-                             alt="Profile">
-                    @else
-                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-orange-600 text-white font-bold shadow-sm">
-                            {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
-                        </div>
-                    @endif
-
-                    <svg :class="isUserMenuOpen ? 'rotate-180' : ''" class="transition-transform duration-200 text-gray-500" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M4.16699 7.5L10.0003 13.3333L15.8337 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-
-                <div x-show="isUserMenuOpen" x-transition class="absolute right-0 mt-3 w-48 rounded-xl border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-800 dark:bg-gray-900 z-50">
-                    <a href="{{ route('profile.edit') }}" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5 rounded-lg">Edit Profile</a>
-                    <hr class="my-1 border-gray-100 dark:border-gray-800" />
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="flex w-full px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg text-left">Sign Out</button>
-                    </form>
-                </div>
+        @if(Auth::user()->foto)
+            <img src="{{ asset('storage/' . Auth::user()->foto) }}" 
+                 class="w-10 h-10 rounded-full object-cover shadow-sm border border-gray-100 dark:border-gray-800" 
+                 alt="Profile">
+        @else
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-orange-600 text-white font-bold shadow-sm">
+                {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
             </div>
-        </div>
+        @endif
+
+        <svg :class="isUserMenuOpen ? 'rotate-180' : ''" class="transition-transform duration-200 text-gray-500" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M4.16699 7.5L10.0003 13.3333L15.8337 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
+    <div x-show="isUserMenuOpen" 
+         x-transition 
+         class="absolute right-0 mt-3 w-48 rounded-xl border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-800 dark:bg-gray-900 z-50">
+        
+        <a href="{{ route('profile.edit') }}" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5 rounded-lg">
+            Edit Profile
+        </a>
+        
+        <hr class="my-1 border-gray-100 dark:border-gray-800" />
+        
+        <form id="logout-form-header" method="POST" action="{{ route('logout') }}" class="hidden">
+            @csrf
+        </form>
+        
+        <button type="button" 
+                onclick="window.confirmLogout()" 
+                class="flex w-full px-3 py-2 text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg text-left transition-colors">
+            Sign Out
+        </button>
+    </div>
+</div>
     </div>
 </header>

@@ -3,13 +3,10 @@
 @section('content')
 <section class="py-24 px-6 lg:px-20 bg-[#0a0a0a] relative overflow-hidden font-['Poppins'] min-h-screen">
     
-    {{-- 1. DEKORASI GARIS (SVG) - COPY PASTE TOTAL DARI BLOG --}}
+    {{-- 1. DEKORASI GARIS (SVG) --}}
     <div class="absolute inset-0 z-0 pointer-events-none opacity-40">
         <svg class="w-full h-full" viewBox="0 0 1920 1080" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {{-- Garis lurus paling atas yang kamu maksud --}}
             <path d="M0 80 H500 L580 20 H1340 L1420 100 H1920" stroke="#F97316" stroke-width="3" opacity="0.4"/>
-            
-            {{-- Garis dekorasi samping --}}
             <path d="M40 120 V400 L100 460 V700 L40 760 V960" stroke="#F97316" stroke-width="2.5" opacity="0.3"/>
             <path d="M1880 120 V300 L1820 360 V750 L1880 810 V960" stroke="#F97316" stroke-width="2.5" opacity="0.3"/>
         </svg>
@@ -27,15 +24,19 @@
             </div>
         </div>
 
-        {{-- Grid Portofolio dengan Pengecekan Data agar tidak Error --}}
+        {{-- Grid Portofolio --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-            @if(isset($portofolios) && $portofolios->count() > 0)
-                @foreach($portofolios as $item)
+            @forelse($portofolios as $item)
                 <div class="group bg-[#1a110a]/40 backdrop-blur-md rounded-[2.5rem] p-8 border border-white/5 shadow-2xl hover:border-orange-500/30 transition-all duration-500">
                     
                     {{-- Thumbnail --}}
                     <div class="block rounded-[2rem] overflow-hidden border border-orange-900/20 mb-6 aspect-video bg-black shadow-lg">
-                        <img src="{{ str_contains($item->gambar, 'http') ? $item->gambar : asset($item->gambar) }}" 
+                        @php
+                            $imgPath = ($item->gambar && Storage::disk('public')->exists($item->gambar)) 
+                                       ? asset('storage/' . $item->gambar) 
+                                       : (str_contains($item->gambar, 'http') ? $item->gambar : "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015");
+                        @endphp
+                        <img src="{{ $imgPath }}" 
                              class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" 
                              alt="{{ $item->judul }}">
                     </div>
@@ -55,18 +56,18 @@
                         </p>
 
                         <div class="pt-4">
-                            <a href="{{ route('frontend.portofolio.detail', $item->slug) }}" class="text-orange-500 text-[10px] font-bold uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
+                            {{-- FIX: GANTI $item->slug MENJADI $item->id --}}
+                            <a href="{{ route('frontend.portofolio.detail', $item->id) }}" class="text-orange-500 text-[10px] font-bold uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
                                 DETAIL PROJECT <span class="group-hover:translate-x-2 transition-transform">→</span>
                             </a>
                         </div>
                     </div>
                 </div>
-                @endforeach
-            @else
+            @empty
                 <div class="col-span-full text-center py-20 opacity-30 uppercase tracking-[0.5em] text-white">
                     Data portofolio belum tersedia.
                 </div>
-            @endif
+            @endforelse
         </div>
     </div>
 </section>

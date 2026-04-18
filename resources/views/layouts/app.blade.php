@@ -49,6 +49,39 @@
         </div>
     </div>
 
-    @stack('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Fungsi ini sekarang bersifat GLOBAL
+        window.confirmLogout = function() {
+            Swal.fire({
+                title: 'Yakin mau keluar?',
+                text: "Sesi Anda akan berakhir sekarang.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#f97316', // Orange branding Seovdetech
+                cancelButtonColor: '#334155',
+                confirmButtonText: 'Ya, Keluar!',
+                cancelButtonText: 'Batal',
+                borderRadius: '24px',
+                // Opsional: Efek blur jika kamu punya ID main-content
+                didOpen: () => {
+                    const main = document.querySelector('main') || document.querySelector('.flex-1');
+                    if (main) main.style.filter = 'blur(4px)';
+                },
+                willClose: () => {
+                    const main = document.querySelector('main') || document.querySelector('.flex-1');
+                    if (main) main.style.filter = 'none';
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit form yang ada di header
+                    document.getElementById('logout-form-header').submit();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
 </body>
 </html>

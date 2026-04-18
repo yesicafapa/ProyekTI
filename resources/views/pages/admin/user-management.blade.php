@@ -32,24 +32,13 @@
                 nama: item.nama, 
                 email: item.email, 
                 level: item.level,
-                password: '' // Kosongkan saat edit untuk keamanan
+                password: '' 
             };
             this.imageUrl = item.foto ? '/storage/' + item.foto : '';
             this.actionUrl = `/management/user-management/${item.id}`; 
             this.openModal = true;
         }
      }" x-cloak>
-
-    {{-- Notifikasi --}}
-    @if(session('success'))
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
-             class="mb-6 flex items-center gap-3 rounded-2xl bg-emerald-500/10 p-4 text-emerald-500 border border-emerald-500/20 shadow-sm transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-            </svg>
-            <span class="font-bold">{{ session('success') }}</span>
-        </div>
-    @endif
 
     {{-- Page Header --}}
     <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -89,9 +78,7 @@
                             </div>
                             <div>
                                 <div class="text-base font-bold text-slate-800 dark:text-slate-100 group-hover:text-orange-500 transition-colors">{{ $item->nama }}</div>
-                                <div class="mt-1 text-xs font-medium text-slate-400">
-                                    {{ $item->email }}
-                                </div>
+                                <div class="mt-1 text-xs font-medium text-slate-400">{{ $item->email }}</div>
                             </div>
                         </div>
                     </td>
@@ -105,11 +92,12 @@
                             <button @click="openEdit({{ $item }})" class="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-400 hover:border-orange-500 hover:text-orange-500 transition-all">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                             </button>
-                            {{-- Mencegah user menghapus akunnya sendiri (Opsional) --}}
+
+                            {{-- Form Hapus dengan SweetAlert2 --}}
                             @if(auth()->id() !== $item->id)
-                            <form action="{{ route('user-management.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus akses admin untuk {{ $item->nama }}?')">
+                            <form id="delete-form-{{ $item->id }}" action="{{ route('user-management.destroy', $item->id) }}" method="POST" class="inline">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-400 hover:border-red-500 hover:text-red-500 transition-all">
+                                <button type="button" onclick="confirmDelete('{{ $item->id }}', '{{ $item->nama }}')" class="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-400 hover:border-red-500 hover:text-red-500 transition-all">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                 </button>
                             </form>
@@ -126,8 +114,46 @@
         </table>
     </div>
 
-    {{-- PEMANGGILAN MODAL --}}
     @include('components.modal-user-management')
 
 </div>
+
+{{-- Data Bridge untuk Notifikasi --}}
+<div id="flash-data" data-success="{{ session('success') }}" class="hidden"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmDelete(id, nama) {
+        Swal.fire({
+            title: 'Hapus Akses Admin?',
+            html: `Anda akan menghapus akses untuk admin <b>${nama}</b>.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#f97316', // Orange Seovdetech
+            cancelButtonColor: '#334155',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            background: '#ffffff', // Ganti ke #111827 jika ingin dark mode full
+            borderRadius: '24px'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + id).submit();
+            }
+        })
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const successMsg = document.getElementById('flash-data').getAttribute('data-success');
+        if (successMsg) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: successMsg,
+                showConfirmButton: false,
+                timer: 2000,
+                borderRadius: '24px'
+            });
+        }
+    });
+</script>
 @endsection

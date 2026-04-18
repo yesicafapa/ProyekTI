@@ -1,125 +1,151 @@
 @extends('layouts.app')
 
 @section('content')
-    {{-- Breadcrumb dengan fungsi Back otomatis --}}
-    <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 class="text-title-md2 font-bold text-black dark:text-white">
-            User Profile
-        </h2>
-
-        <nav>
-            <ol class="flex items-center gap-2">
-                <li>
-                    <a class="font-medium text-gray-500 hover:text-orange-600" href="{{ url()->previous() }}">
-                        Back /
-                    </a>
-                </li>
-                <li class="font-medium text-orange-600">Edit Profile</li>
-            </ol>
+<div class="min-h-screen pb-20 px-4 sm:px-6 lg:px-8">
+    {{-- Header Section --}}
+    <div class="mb-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Pengaturan Profil</h2>
+            <p class="text-base text-gray-500 dark:text-gray-400 mt-1">Kelola data diri dan keamanan akun CV Seovdetech Anda.</p>
+        </div>
+        
+        <nav class="flex text-sm font-medium">
+            {{-- FIX: Link Dashboard diarahkan ke management dashboard --}}
+            <a href="{{ route('dashboard') }}" class="text-gray-500 hover:text-orange-500 transition-colors">Dashboard</a>
+            <span class="mx-2 text-gray-400">/</span>
+            <span class="text-orange-600">Edit Profil</span>
         </nav>
     </div>
-    
-    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03] lg:p-8">
-        <div class="flex items-center justify-between mb-7">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Informasi Akun</h3>
-            <span class="px-3 py-1 text-xs font-medium bg-orange-100 text-orange-600 rounded-full uppercase">
-                {{ Auth::user()->level }}
-            </span>
-        </div>
 
-        {{-- Alert Success --}}
-        @if(session('success'))
-            <div class="mb-6 flex w-full border-l-6 border-green-500 bg-green-50 px-7 py-4 shadow-md dark:bg-white/[0.03] md:p-5">
-                <div class="mr-5 flex h-9 w-9 items-center justify-center rounded-lg bg-green-500 text-white">
-                    <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 1L5.66667 11L1 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <div class="w-full">
-                    <h5 class="mb-1 text-lg font-semibold text-green-900 dark:text-green-500">Berhasil!</h5>
-                    <p class="text-base leading-relaxed text-green-800 dark:text-green-400">{{ session('success') }}</p>
-                </div>
-            </div>
-        @endif
+    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="max-w-7xl mx-auto">
+        @csrf
+        @method('PUT')
 
-        {{-- Tampilkan Error Validasi --}}
-        @if ($errors->any())
-            <div class="mb-6 rounded-lg bg-red-50 p-4 text-red-600 dark:bg-red-900/20 dark:text-red-400">
-                <ul class="list-disc pl-5">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        {{-- Form Utama --}}
-        <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
-            @csrf
-            @method('PUT')
-
-            {{-- Bagian Upload Foto --}}
-            <div class="mb-8 p-6 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-gray-800">
-                <div class="flex flex-col sm:flex-row items-center gap-8">
-                    <div class="relative">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+            {{-- Kiri: Card Foto Profil - Dibuat lebih slim & profesional --}}
+            <div class="xl:col-span-4">
+                <div class="bg-white dark:bg-gray-900 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-800 p-8 text-center sticky top-24">
+                    <div class="relative inline-block">
                         @if(Auth::user()->foto)
-                            <img src="{{ asset('storage/' . Auth::user()->foto) }}" alt="Profile" 
-                                 class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl dark:border-gray-800">
+                            <img src="{{ asset('storage/' . Auth::user()->foto) }}" 
+                                 class="w-40 h-40 rounded-[2rem] object-cover ring-4 ring-orange-500/10 shadow-lg">
                         @else
-                            <div class="flex items-center justify-center w-32 h-32 rounded-full bg-orange-600 text-white text-4xl font-bold border-4 border-white shadow-xl dark:border-gray-800">
+                            <div class="w-40 h-40 rounded-[2rem] bg-orange-600 flex items-center justify-center text-5xl font-black text-white shadow-lg">
                                 {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
                             </div>
                         @endif
+                        
+                        <label class="absolute -bottom-2 -right-2 bg-orange-600 p-2.5 rounded-xl shadow-lg border-4 border-white dark:border-gray-900 cursor-pointer hover:bg-orange-700 transition-all">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <input type="file" name="foto" class="hidden">
+                        </label>
                     </div>
                     
-                    <div class="text-center sm:text-left flex-1">
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Upload Foto Baru</label>
-                        <input type="file" name="foto" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-orange-600 file:text-white hover:file:bg-orange-700 transition-all cursor-pointer">
-                        <p class="mt-2 text-xs text-gray-400 font-medium italic">*Rekomendasi: Ukuran 1:1, Maksimal 2MB.</p>
+                    <div class="mt-6">
+                        <h4 class="text-xl font-bold text-gray-900 dark:text-white">{{ Auth::user()->nama }}</h4>
+                        <div class="mt-2">
+                            <span class="px-3 py-1 rounded-lg text-[10px] font-black bg-orange-500/10 text-orange-500 uppercase tracking-widest border border-orange-500/20">
+                                {{ Auth::user()->level }}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {{-- Bagian Input Data --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {{-- Input Nama --}}
-                <div class="space-y-2">
-                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Nama Lengkap</label>
-                    <input type="text" name="nama" value="{{ old('nama', Auth::user()->nama) }}" 
-                           class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 dark:border-gray-700 dark:bg-dark-900 dark:text-white" required>
+            {{-- Kanan: Form Data Card --}}
+            <div class="xl:col-span-8 space-y-6">
+                {{-- Data Pribadi --}}
+                <div class="bg-white dark:bg-gray-900 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <div class="px-8 py-5 border-b border-gray-50 dark:border-gray-800">
+                        <h3 class="text-sm font-bold text-gray-800 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                            <span class="w-1.5 h-4 bg-orange-500 rounded-full"></span> Informasi Personal
+                        </h3>
+                    </div>
+                    <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-gray-500 dark:text-gray-400 ml-1">Nama Lengkap</label>
+                            <input type="text" name="nama" value="{{ old('nama', Auth::user()->nama) }}" 
+                                   class="w-full rounded-xl border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-3.5 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all dark:text-white">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-gray-500 dark:text-gray-400 ml-1">Email Utama</label>
+                            <input type="email" name="email" value="{{ old('email', Auth::user()->email) }}" 
+                                   class="w-full rounded-xl border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-3.5 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all dark:text-white">
+                        </div>
+                    </div>
                 </div>
 
-                {{-- Input Email --}}
-                <div class="space-y-2">
-                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Alamat Email</label>
-                    <input type="email" name="email" value="{{ old('email', Auth::user()->email) }}" 
-                           class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 dark:border-gray-700 dark:bg-dark-900 dark:text-white" required>
+                {{-- Keamanan --}}
+                <div class="bg-white dark:bg-gray-900 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <div class="px-8 py-5 border-b border-gray-50 dark:border-gray-800">
+                        <h3 class="text-sm font-bold text-gray-800 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                            <span class="w-1.5 h-4 bg-red-500 rounded-full"></span> Keamanan Akun
+                        </h3>
+                    </div>
+                    <div class="p-8 space-y-6">
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-black text-red-500 ml-1 uppercase tracking-widest">Konfirmasi Password Saat Ini *</label>
+                            <input type="password" name="current_password" required placeholder="Masukkan password lama"
+                                   class="w-full rounded-xl border-red-100 dark:border-red-900/30 bg-red-50/30 dark:bg-red-900/10 p-3.5 text-sm focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all dark:text-white">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-gray-500 dark:text-gray-400 ml-1">Password Baru (Opsional)</label>
+                                <input type="password" name="password" placeholder="Min. 8 karakter"
+                                       class="w-full rounded-xl border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-3.5 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all dark:text-white">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-gray-500 dark:text-gray-400 ml-1">Ulangi Password Baru</label>
+                                <input type="password" name="password_confirmation" placeholder="Harus sama"
+                                       class="w-full rounded-xl border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-3.5 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all dark:text-white">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {{-- Input Password Baru --}}
-                <div class="space-y-2">
-                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Password Baru</label>
-                    <input type="password" name="password" placeholder="Kosongkan jika tidak ganti" autocomplete="new-password"
-                           class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 dark:border-gray-700 dark:bg-dark-900 dark:text-white">
-                </div>
-
-                {{-- Konfirmasi Password --}}
-                <div class="space-y-2">
-                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Konfirmasi Password Baru</label>
-                    <input type="password" name="password_confirmation" placeholder="Ulangi password baru"
-                           class="w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 dark:border-gray-700 dark:bg-dark-900 dark:text-white">
+                {{-- Action Buttons --}}
+                <div class="flex items-center justify-end gap-4 pt-4">
+                    <button type="button" onclick="history.back()" class="text-sm font-bold text-gray-400 hover:text-gray-600 dark:hover:text-white transition-all">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-10 py-3.5 rounded-xl font-bold text-white bg-orange-600 shadow-lg shadow-orange-600/20 hover:bg-orange-700 active:scale-95 transition-all text-sm uppercase tracking-widest">
+                        Simpan Perubahan
+                    </button>
                 </div>
             </div>
+        </div>
+    </form>
+</div>
 
-            <hr class="border-gray-100 dark:border-gray-800 my-8" />
+{{-- Script SweetAlert tetep sama --}}
+<div id="status-data" data-success="{{ session('success') }}" data-error="{{ session('error') }}" data-errors='@json($errors->all())' class="hidden"></div>
 
-            {{-- Tombol Aksi --}}
-            <div class="flex justify-end items-center gap-4">
-                <a href="{{ url()->previous() }}" class="text-sm font-medium text-gray-500 hover:text-gray-800 dark:hover:text-white transition-colors">
-                    Batal
-                </a>
-                <button type="submit" class="flex justify-center rounded-lg bg-orange-600 px-8 py-3 font-semibold text-white shadow-lg hover:bg-orange-700 transform transition-active active:scale-95">
-                    Simpan Perubahan
-                </button>
-            </div>
-        </form>
-    </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dataEl = document.getElementById('status-data');
+        const successMsg = dataEl.getAttribute('data-success');
+        const errorMsg = dataEl.getAttribute('data-error');
+        const vErrors = JSON.parse(dataEl.getAttribute('data-errors'));
+
+        const swalConfig = {
+            confirmButtonColor: '#ea580c',
+            borderRadius: '1.25rem'
+        };
+
+        if (successMsg) {
+            Swal.fire({ ...swalConfig, icon: 'success', title: 'Berhasil!', text: successMsg, showConfirmButton: false, timer: 2000 });
+        }
+        if (errorMsg) {
+            Swal.fire({ ...swalConfig, icon: 'error', title: 'Gagal!', text: errorMsg });
+        }
+        if (vErrors.length > 0) {
+            Swal.fire({ ...swalConfig, icon: 'warning', title: 'Cek Inputan', html: `<ul class="text-left text-xs">${vErrors.map(e => `<li>- ${e}</li>`).join('')}</ul>` });
+        }
+    });
+</script>
 @endsection

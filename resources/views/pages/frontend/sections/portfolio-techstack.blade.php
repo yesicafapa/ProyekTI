@@ -14,45 +14,50 @@
         <div class="flex flex-col lg:flex-row gap-12 justify-center items-start">
             
             {{-- KOLOM KIRI: PORTOFOLIO --}}
-            <div class="lg:w-[500px] flex flex-col">
-                <div class="mb-8">
-                    <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">Portofolio</h2>
-                    <div class="h-1.5 w-28 bg-orange-500"></div>
-                </div>
+<div class="lg:w-[500px] flex flex-col">
+    <div class="mb-8">
+        <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">Portofolio</h2>
+        <div class="h-1.5 w-28 bg-orange-500"></div>
+    </div>
 
-                <div class="bg-[#1a110a] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl h-[650px] flex flex-col">
-                    <div class="flex-1 overflow-y-auto pr-4 space-y-10 custom-scrollbar">
-                        
-                        {{-- Item 1 --}}
-                        <div class="group">
-                            <a href="{{ route('frontend.portofolio.index') }}" class="block rounded-[2rem] overflow-hidden border border-orange-900/20 mb-4 aspect-video bg-black shadow-lg">
-                                <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&w=2068" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                            </a>
-                            <div class="px-2">
-                                <a href="{{ route('frontend.portofolio.index') }}" class="group">
-                                    <h3 class="text-white font-bold text-lg group-hover:text-orange-500 transition-colors mb-1 uppercase">Psikotes Gratis</h3>
-                                </a>
-                                <p class="text-slate-400 text-sm">Sistem informasi untuk pelaksanaan ujian psikotes secara daring dengan hasil instan.</p>
-                            </div>
-                        </div>
-
-                        {{-- Item 2 --}}
-                        <div class="group">
-                            <a href="{{ route('frontend.portofolio.index') }}" class="block rounded-[2rem] overflow-hidden border border-orange-900/20 mb-4 aspect-video bg-black shadow-lg">
-                                <img src="https://images.unsplash.com/photo-1454165833762-0102b282f06b?q=80&w=2070" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                            </a>
-                            <div class="px-2">
-                                <a href="{{ route('frontend.portofolio.index') }}" class="group">
-                                    <h3 class="text-white font-bold text-lg group-hover:text-orange-500 transition-colors mb-1 uppercase">SIAKAD PNM</h3>
-                                </a>
-                                <p class="text-slate-400 text-sm">Platform akademik untuk manajemen data mahasiswa, nilai, dan kurikulum.</p>
-                            </div>
-                        </div>
-
-                    </div>
+    <div class="bg-[#1a110a] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl h-[650px] flex flex-col">
+        <div class="flex-1 overflow-y-auto pr-4 space-y-10 custom-scrollbar">
+            
+            @forelse($portofolios as $portofolio)
+            {{-- Item Portofolio Dinamis --}}
+            <div class="group">
+                <a href="{{ route('frontend.portofolio.detail', $portofolio->id) }}" class="block rounded-[2rem] overflow-hidden border border-orange-900/20 mb-4 aspect-video bg-black shadow-lg">
+                    @php
+                        // Cek apakah ada file gambar, kalau tidak pakai placeholder
+                        $imgPath = ($portofolio->gambar && Storage::disk('public')->exists($portofolio->gambar)) 
+                                   ? asset('storage/' . $portofolio->gambar) 
+                                   : "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015";
+                    @endphp
+                    <img src="{{ $imgPath }}" 
+                         class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500"
+                         alt="{{ $portofolio->judul }}">
+                </a>
+                <div class="px-2">
+                    <a href="{{ route('frontend.portofolio.detail', $portofolio->id) }}" class="group">
+                        <h3 class="text-white font-bold text-lg group-hover:text-orange-500 transition-colors mb-1 uppercase leading-tight">
+                            {{ $portofolio->judul }}
+                        </h3>
+                    </a>
+                    <p class="text-slate-400 text-sm line-clamp-2 italic">
+                        {{ $portofolio->deskripsi }}
+                    </p>
                 </div>
             </div>
+            @empty
+            {{-- Tampilan kalau database kosong --}}
+            <div class="flex flex-col items-center justify-center h-full opacity-30 italic">
+                <p class="text-white text-xs tracking-widest uppercase">Belum ada project.</p>
+            </div>
+            @endforelse
 
+        </div>
+    </div>
+</div>
             {{-- KOLOM KANAN: TECH STACK --}}
             <div class="lg:w-[550px] flex flex-col">
                 <div class="mb-8">

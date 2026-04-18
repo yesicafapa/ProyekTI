@@ -65,56 +65,60 @@
             </div>
 
             {{-- KOLOM KANAN: FAQ --}}
-            <div class="lg:col-span-7" x-data="{ activeFaq: null }">
-                <div class="mb-10">
-                    <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">FAQ</h2>
-                    <div class="h-1.5 w-28 bg-orange-500"></div>
-                </div>
+{{-- KOLOM KANAN: FAQ --}}
+<div class="lg:col-span-7" x-data="{ activeFaq: null }">
+    <div class="mb-10">
+        <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">FAQ</h2>
+        <div class="h-1.5 w-28 bg-orange-500"></div>
+    </div>
+    
+    <div class="space-y-4">
+        {{-- FILTER LANGSUNG DI BLADE: Hanya nampilin status 1 --}}
+        @forelse($faqs->where('status', 1) as $item)
+        <div class="rounded-[1.5rem] bg-[#1a1305]/30 border border-orange-900/10 overflow-hidden hover:border-orange-500/30 transition-colors backdrop-blur-sm shadow-lg shadow-black/20">
+            <button @click="activeFaq = (activeFaq === {{ $item->id }} ? null : {{ $item->id }})" 
+                    class="w-full flex items-center justify-between p-6 text-left group outline-none">
                 
-                <div class="space-y-4">
-                    @php
-                        $faq_items = [
-                            ['id' => 1, 'p' => 'Apa itu Seov Detech?', 'j' => 'Seov Detech adalah mitra inovasi digital yang berfokus pada solusi teknologi mutakhir untuk membantu bisnis berkembang lebih cepat.'],
-                            ['id' => 2, 'p' => 'Layanan apa saja yang tersedia?', 'j' => 'Website Development, Mobile App, UI/UX Design, serta Maintenance Sistem.'],
-                            ['id' => 3, 'p' => 'Berapa lama proses pembuatan?', 'j' => 'Landing page 1-2 minggu, sistem kustom 4-8 minggu.'],
-                            ['id' => 4, 'p' => 'Apakah website bisa dibuka di HP?', 'j' => 'Tentu! Semua produk kami menggunakan Responsive Design yang optimal di semua layar.'],
-                            ['id' => 5, 'p' => 'Bagaimana cara memesan?', 'j' => 'Klik tombol Hubungi Kami di bawah untuk konsultasi gratis melalui formulir kami.']
-                        ];
-                    @endphp
+                <span :class="activeFaq === {{ $item->id }} ? 'text-orange-500' : 'text-white'" 
+                      class="text-sm font-bold uppercase tracking-widest transition-colors relative z-10 pr-4">
+                    {{ $item->pertanyaan }}
+                </span>
 
-                    @foreach($faq_items as $item)
-                    <div class="rounded-[1.5rem] bg-[#1a1305]/30 border border-orange-900/10 overflow-hidden hover:border-orange-500/30 transition-colors backdrop-blur-sm shadow-lg shadow-black/20">
-                        <button @click="activeFaq = activeFaq === {{ $item['id'] }} ? null : {{ $item['id'] }}" 
-                                class="w-full flex items-center justify-between p-6 text-left group">
-                            <span class="text-sm font-bold text-white uppercase tracking-widest group-hover:text-orange-500 transition-colors relative z-10">
-                                {{ $item['p'] }}
-                            </span>
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full border border-orange-500/30 flex items-center justify-center relative z-10">
-                                <svg :class="{'rotate-180 bg-orange-500 text-black': activeFaq === {{ $item['id'] }}}" 
-                                     class="h-4 w-4 text-orange-500 transition-all duration-300 rounded-full" 
-                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </div>
-                        </button>
-                        <div x-show="activeFaq === {{ $item['id'] }}" x-collapse class="px-6 pb-8">
-                            <p class="text-slate-400 text-xs font-medium leading-relaxed border-t border-orange-900/20 pt-6 relative z-10">{{ $item['j'] }}</p>
-                        </div>
-                    </div>
-                    @endforeach
+                <div class="flex-shrink-0 w-8 h-8 rounded-full border border-orange-500/30 flex items-center justify-center relative z-10 transition-all duration-300"
+                     :class="activeFaq === {{ $item->id }} ? 'bg-orange-500 border-orange-500' : ''">
+                    <svg :class="activeFaq === {{ $item->id }} ? 'rotate-180 text-black' : 'text-orange-500'" 
+                         class="h-4 w-4 transition-all duration-300" 
+                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                    </svg>
                 </div>
+            </button>
 
-                {{-- CTA Box --}}
-                <div class="mt-12 p-8 rounded-[2rem] bg-gradient-to-r from-orange-500 to-orange-600 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl shadow-orange-500/30 relative overflow-hidden CTA-box">
-                    <div class="absolute -right-10 -top-10 w-24 h-24 bg-white/10 rounded-full blur-2xl CTA-decor"></div>
-                    <p class="text-black font-black text-xs uppercase tracking-wider relative z-10 CTA-text">Butuh bantuan konsultasi project Anda?</p>
-                    
-                    {{-- PERBAIKAN: Sekarang mengarah ke route contact --}}
-                    <a href="{{ route('frontend.contact') }}" class="px-8 py-3 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:scale-105 transition-transform shadow-xl relative z-10 CTA-button">Hubungi Kami</a>
+            <div x-show="activeFaq === {{ $item->id }}" 
+                 x-collapse 
+                 x-cloak
+                 class="px-6 pb-8">
+                <div class="border-t border-orange-900/20 pt-6">
+                    <p class="text-slate-400 text-xs font-medium leading-relaxed relative z-10">
+                        {{ $item->jawaban }}
+                    </p>
                 </div>
             </div>
         </div>
+        @empty
+        <div class="text-center py-10 border border-dashed border-white/10 rounded-[1.5rem]">
+            <p class="text-slate-500 italic text-xs uppercase tracking-widest">Belum ada data FAQ tersedia.</p>
+        </div>
+        @endforelse
     </div>
+
+    {{-- CTA Box --}}
+    <div class="mt-12 p-8 rounded-[2rem] bg-gradient-to-r from-orange-500 to-orange-600 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl shadow-orange-500/30 relative overflow-hidden">
+        <div class="absolute -right-10 -top-10 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+        <p class="text-black font-black text-xs uppercase tracking-wider relative z-10">Butuh bantuan konsultasi project Anda?</p>
+        <a href="{{ route('frontend.contact') }}" class="px-8 py-3 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:scale-105 transition-transform shadow-xl relative z-10">Hubungi Kami</a>
+    </div>
+</div>
 </section>
 
 <style>
