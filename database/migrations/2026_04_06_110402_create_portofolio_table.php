@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('judul', 255)->nullable();
             $table->text('deskripsi')->nullable();
             $table->string('url', 255)->nullable();
-            $table->string('gambar', 255)->nullable();
+            $table->string('gambar', 100)->nullable();
             $table->tinyInteger('status')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->timestamp('created_at')->useCurrent();

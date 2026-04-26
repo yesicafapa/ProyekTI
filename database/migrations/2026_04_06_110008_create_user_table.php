@@ -20,7 +20,7 @@ return new class extends Migration
         $table->tinyInteger('status')->nullable();
         $table->timestamp('upload_at')->nullable();
         $table->timestamp('created_at')->useCurrent();
-        $table->string('foto', 255)->nullable();
+        $table->string('foto', 100)->nullable();
     });
 }
 

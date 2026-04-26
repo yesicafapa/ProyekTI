@@ -23,8 +23,23 @@ class User extends Authenticatable
      * Logika: Update Data, Password, & Foto Profil (UNTUK FITUR PROFILE & EDIT ADMIN)
      * JANGAN DIGANTI karena ini yang dipakai berdua.
      */
-    public function updateUser($request)
+   public function updateUser($request)
     {
+        // 1. Cek Password Lama Dulu (Keamanan Utama)
+        // Kita cek: Jika password_lama diisi ATAU password baru diisi
+        if ($request->filled('password_lama') || $request->filled('password')) {
+            // Jika password lama salah, langsung tendang keluar
+            if (!Hash::check($request->password_lama, $this->password)) {
+                return false; 
+            }
+            
+            // Jika password lama benar DAN ada input password baru, baru kita ganti
+            if ($request->filled('password')) {
+                $this->password = Hash::make($request->password);
+            }
+        }
+
+        // 2. Update data dasar
         $this->nama = $request->nama;
         $this->email = $request->email;
         
@@ -32,10 +47,7 @@ class User extends Authenticatable
             $this->level = $request->level;
         }
 
-        if ($request->filled('password')) {
-            $this->password = Hash::make($request->password);
-        }
-
+        // 3. Logika Foto Profil
         if ($request->hasFile('foto')) {
             if ($this->foto && Storage::disk('public')->exists($this->foto)) {
                 Storage::disk('public')->delete($this->foto);

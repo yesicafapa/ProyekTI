@@ -10,7 +10,7 @@ use App\Http\Controllers\Admin\{
 
 /*
 |--------------------------------------------------------------------------
-| 1. FRONTEND ROUTES (DATABASE DRIVEN)
+| 1. FRONTEND ROUTES (Sisi Pengunjung)
 |--------------------------------------------------------------------------
 */
 
@@ -36,38 +36,28 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
         return view('pages.frontend.sections.portfolio', compact('portofolios', 'artikels', 'testimonis', 'faqs'));
     })->name('portofolio.index');
 
-    // Detail Portofolio - FIXED ALL ERRORS
+    // Detail Portofolio
     Route::get('/portofolio/{id}', function ($id) {
         $portofolio = \App\Models\Portofolio::findOrFail($id);
-        
-        // Mengambil semua data pendukung karena template detail meng-include section lain
         $portofolios = \App\Models\Portofolio::latest()->get(); 
         $testimonis = \App\Models\Testimoni::where('status', 1)->latest()->get();
         $artikels = \App\Models\Artikel::where('status', 1)->latest()->take(3)->get();
         $faqs = \App\Models\Faq::all(); 
 
         return view('pages.frontend.sections.portfolio_detail', compact(
-            'portofolio', 
-            'portofolios', 
-            'testimonis', 
-            'artikels',
-            'faqs'
+            'portofolio', 'portofolios', 'testimonis', 'artikels', 'faqs'
         ));
     })->name('portofolio.detail');
 
-    // FIX HALAMAN LIST BLOG: Mengambil data asli database
+    // List Blog
     Route::get('/blog', function () {
         $artikels = \App\Models\Artikel::where('status', 1)->latest()->paginate(9);
         return view('pages.frontend.sections.blog', compact('artikels'));
     })->name('blog.index');
 
-    // 2. DETAIL BLOG: FIX URL & QUERY
-    // Cukup pakai '/blog/{id}', karena sudah dibungkus prefix 'frontend'
+    // Detail Blog
     Route::get('/blog/{id}', function ($id) {
-        // Gunakan findOrFail agar kalau ID tidak ada langsung muncul 404 (bukan error SQL)
         $artikel = \App\Models\Artikel::findOrFail($id);
-        
-        // Ambil artikel lain untuk section "More Insights"
         $artikels = \App\Models\Artikel::where('id', '!=', $id)
                                     ->where('status', 1) 
                                     ->latest()
@@ -75,24 +65,23 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
                                     ->get();
 
         return view('pages.frontend.sections.blog_detail', compact('artikel', 'artikels'));
-    })->name('blog.detail'); // Nama route jadi frontend.blog.detail
+    })->name('blog.detail');
 
-    // Rute Kontak (Tetap menggunakan database)
+    // Halaman Kontak (Tampilan)
     Route::get('/contact-us', function () {
         $testimonis = \App\Models\Testimoni::where('status', 1)->latest()->get();
         $artikels = \App\Models\Artikel::where('status', 1)->latest()->take(3)->get();
         return view('pages.frontend.sections.contact', compact('testimonis', 'artikels'));
     })->name('contact');
 
-    Route::post('/contact-send', function (\Illuminate\Http\Request $request) {
-        return redirect()->route('frontend.contact.success');
-    })->name('contact.send');
+    // Proses Kirim Pesan (Manggil Controller)
+    Route::post('/contact-send', [ContactController::class, 'send'])->name('contact.send');
 
+    // Halaman Sukses
     Route::get('/contact-success', function () {
         return view('pages.frontend.sections.contact_success');
     })->name('contact.success');
-
-}); // <--- PENUTUP FRONTEND GROUP YANG TADI HILANG
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -126,10 +115,22 @@ Route::middleware(['auth'])->prefix('management')->group(function () {
     Route::resource('testimoni', TestimoniController::class)->except(['show']);
     Route::resource('faq', FaqController::class)->except(['show']);
 
-    Route::controller(ContactController::class)->prefix('contact')->name('contact.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::patch('/{id}/status', 'updateStatus')->name('updateStatus');
-        Route::delete('/{id}', 'destroy')->name('destroy');
+    Route::controller(App\Http\Controllers\Admin\ContactController::class)->group(function () {
+        
+        // PINTU 1: Nama rute pakai 'admin.contact.' (Untuk tombol di tabel Blade)
+        Route::prefix('contact')->name('admin.contact.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::patch('/{id}/status', 'updateStatus')->name('updateStatus');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+        });
+
+        // PINTU 2: Nama rute tanpa 'admin.' (Untuk Sidebar / MenuHelper)
+        // Ini biar error "Route [contact.index] not defined" hilang selamanya
+        Route::name('contact.')->group(function () {
+            Route::get('/contact', 'index')->name('index');
+            Route::patch('/contact/{id}/status', 'updateStatus')->name('updateStatus');
+            Route::delete('/contact/{id}', 'destroy')->name('destroy');
+        });
     });
 
     Route::controller(ProfileController::class)->prefix('profile')->name('profile.')->group(function () {

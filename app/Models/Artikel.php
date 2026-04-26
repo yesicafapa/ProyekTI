@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 class Artikel extends Model
 {
     protected $table = 'artikel';
-    protected $guarded = [];
+    // Gunakan fillable untuk keamanan ekstra agar status tidak terabaikan
+    protected $fillable = ['judul', 'ringkasan', 'isi', 'status', 'thumbnail', 'user_id'];
 
     public function user()
     {
@@ -18,8 +19,8 @@ class Artikel extends Model
 
     public static function storeData($request)
     {
-        $data = $request->all();
-        $data['user_id'] = Auth::id(); // Logika user masuk sini
+        $data = $request->only(['judul', 'ringkasan', 'isi', 'status']);
+        $data['user_id'] = Auth::id();
 
         if ($request->hasFile('thumbnail')) {
             $data['thumbnail'] = $request->file('thumbnail')->store('artikel', 'public');
@@ -30,11 +31,14 @@ class Artikel extends Model
 
     public function updateData($request)
     {
-        $data = $request->all();
-        $data['user_id'] = Auth::id(); // Setiap update, penulis otomatis berganti ke pengedit
+        // Ambil data spesifik agar status tidak tertimpa nilai default jika request kosong
+        $data = $request->only(['judul', 'ringkasan', 'isi', 'status']);
+        
+        // Opsional: Tetap pertahankan user_id pembuat asli jika tidak ingin berubah saat diedit
+        // $data['user_id'] = Auth::id(); 
 
         if ($request->hasFile('thumbnail')) {
-            if ($this->thumbnail) {
+            if ($this->thumbnail && Storage::disk('public')->exists($this->thumbnail)) {
                 Storage::disk('public')->delete($this->thumbnail);
             }
             $data['thumbnail'] = $request->file('thumbnail')->store('artikel', 'public');

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('pengguna', 100)->nullable();
             $table->string('deskripsi', 512)->nullable();
             $table->tinyInteger('status')->nullable();
-            $table->string('image_pengguna', 255)->nullable();
+            $table->string('image_pengguna', 100)->nullable();
             
             // Kolom timestamp sesuai diagram
             $table->timestamp('upload_at')->nullable();

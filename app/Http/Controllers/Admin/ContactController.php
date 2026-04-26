@@ -9,13 +9,12 @@ use Illuminate\Http\Request;
 class ContactController extends Controller
 {
     /**
-     * Menampilkan daftar pesan masuk dari pengunjung
+     * Menampilkan daftar pesan masuk di Panel Admin
      */
     public function index()
     {
-        // Mengambil pesan terbaru
         $messages = Contact::latest()->get(); 
-        return view('pages.admin..contact', compact('messages'));
+        return view('pages.admin.contact', compact('messages'));
     }
 
     /**
@@ -25,8 +24,9 @@ class ContactController extends Controller
     {
         $contact = Contact::findOrFail($id);
         
-        // Memanggil logika toggle yang ada di Model
-        $contact->toggleResponse();
+        // Cara manual agar tidak error jika fungsi toggleResponse() di Model belum ada
+        $contact->is_responded = !$contact->is_responded;
+        $contact->save();
 
         return back()->with('success', 'Status respon berhasil diperbarui!');
     }
@@ -43,25 +43,27 @@ class ContactController extends Controller
     }
 
     /**
-     * TENTANG: Method untuk simulasi kiriman form (DATA DUMMY)
-     * Bagian simpan ke database dimatikan agar tidak error MySQL.
+     * MENGHUBUNGKAN FRONTEND KE DATABASE
      */
     public function send(Request $request)
     {
-        // 1. Validasi input agar form tidak kosong
         $request->validate([
-            'name'    => 'required|string|max:255',
+            'nama'    => 'required|string|max:255',
             'email'   => 'required|email',
-            'phone'   => 'required',
-            'address' => 'required',
-            'message' => 'required',
+            'telepon' => 'required',
+            'alamat'  => 'required',
+            'pesan'   => 'required',
         ]);
 
-        // 2. DATA DUMMY MODE:
-        // Kita tidak menjalankan Contact::create agar tidak bentrok dengan tabel MySQL.
-        // Cukup biarkan kosong di sini atau Anda bisa log data jika ingin cek.
+        Contact::create([
+            'nama'    => $request->nama,
+            'email'   => $request->email,
+            'telepon' => $request->telepon,
+            'alamat'  => $request->alamat,
+            'pesan'   => $request->pesan,
+            'is_responded' => 0 
+        ]);
 
-        // 3. Langsung lempar ke halaman sukses zigzag yang sudah dibuat di web.php
-        return redirect()->route('frontend.contact.success');
+        return redirect()->route('frontend.contact.success')->with('success', 'Pesan terkirim!');
     }
 }

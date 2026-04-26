@@ -14,6 +14,7 @@
         <div class="flex flex-col lg:flex-row gap-12 justify-center items-start">
             
             {{-- KOLOM KIRI: PORTOFOLIO --}}
+{{-- KOLOM KIRI: PORTOFOLIO --}}
 <div class="lg:w-[500px] flex flex-col">
     <div class="mb-8">
         <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">Portofolio</h2>
@@ -23,12 +24,12 @@
     <div class="bg-[#1a110a] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl h-[650px] flex flex-col">
         <div class="flex-1 overflow-y-auto pr-4 space-y-10 custom-scrollbar">
             
-            @forelse($portofolios as $portofolio)
+            {{-- TAMBAHKAN FILTER .where('status', 1) DI SINI --}}
+            @forelse($portofolios->where('status', 1) as $portofolio)
             {{-- Item Portofolio Dinamis --}}
             <div class="group">
                 <a href="{{ route('frontend.portofolio.detail', $portofolio->id) }}" class="block rounded-[2rem] overflow-hidden border border-orange-900/20 mb-4 aspect-video bg-black shadow-lg">
                     @php
-                        // Cek apakah ada file gambar, kalau tidak pakai placeholder
                         $imgPath = ($portofolio->gambar && Storage::disk('public')->exists($portofolio->gambar)) 
                                    ? asset('storage/' . $portofolio->gambar) 
                                    : "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015";
@@ -49,7 +50,7 @@
                 </div>
             </div>
             @empty
-            {{-- Tampilan kalau database kosong --}}
+            {{-- Tampilan kalau database kosong atau semua statusnya 0 --}}
             <div class="flex flex-col items-center justify-center h-full opacity-30 italic">
                 <p class="text-white text-xs tracking-widest uppercase">Belum ada project.</p>
             </div>

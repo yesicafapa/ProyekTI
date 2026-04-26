@@ -3,86 +3,126 @@
     $menuGroups = MenuHelper::getMainNavItems(); 
 @endphp
 
-<aside id="sidebar"
-    class="fixed flex flex-col top-0 left-0 z-9999 h-screen transition-all duration-300 ease-in-out bg-white border-r border-gray-200 dark:bg-gray-900 dark:border-gray-800"
-    x-data="{
-        openSubmenus: {},
-        toggleSubmenu(key) {
-            if($store.sidebar.isExpanded || $store.sidebar.isHovered) {
-                this.openSubmenus[key] = !this.openSubmenus[key];
-            }
-        }
-    }"
-    :class="{
-        'w-72.5': $store.sidebar.isExpanded || $store.sidebar.isHovered,
-        'w-20': !$store.sidebar.isExpanded && !$store.sidebar.isHovered,
-        'translate-x-0': $store.sidebar.isMobileOpen,
-        '-translate-x-full lg:translate-x-0': !$store.sidebar.isMobileOpen
-    }"
-    @mouseenter="$store.sidebar.setHovered(true)"
-    @mouseleave="$store.sidebar.setHovered(false)">
+{{-- 1. OVERLAY --}}
+<div 
+    x-show="$store.sidebar.isMobileOpen" 
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    @click="$store.sidebar.toggleMobileOpen()"
+    class="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-sm lg:hidden"
+    style="display: none;">
+</div>
 
-    <div class="flex items-center justify-center h-20 px-6">
-        <a href="{{ route('dashboard') }}" class="flex items-center justify-center w-full text-black dark:text-white">
-            <template x-if="$store.sidebar.isExpanded || $store.sidebar.isHovered">
-                <span class="text-xl font-bold uppercase whitespace-nowrap tracking-widest text-orange-500">CV SEOVDETECH</span>
-            </template>
-            <template x-if="!$store.sidebar.isExpanded && !$store.sidebar.isHovered">
-                <span class="text-2xl font-black text-orange-500">S</span>
-            </template>
-        </a>
+{{-- 2. TOMBOL HAMBURGER --}}
+<button 
+    x-show="!$store.sidebar.isMobileOpen"
+    @click="$store.sidebar.toggleMobileOpen()"
+    class="fixed top-5 left-4 z-[9997] flex h-10 w-10 items-center justify-center rounded-xl bg-white/90 border border-gray-100 shadow-sm backdrop-blur-md dark:bg-[#1a1a1a]/90 dark:border-white/5 lg:hidden">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+</button>
+
+{{-- 3. SIDEBAR ASIDE --}}
+<aside id="sidebar"
+    class="fixed flex flex-col top-0 left-0 z-[9999] h-screen transition-all duration-300 ease-in-out bg-white border-r border-gray-100 dark:bg-[#0d0d0d] dark:border-white/5 shadow-2xl font-poppins w-72"
+    :class="$store.sidebar.isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+
+    {{-- Logo Section --}}
+    <div class="flex items-center h-24 px-8 shrink-0">
+        <div class="flex flex-col border-l-4 border-orange-500 pl-4">
+            <div class="flex flex-col leading-none">
+                <span class="text-2xl font-black italic tracking-tighter uppercase">
+                    <span class="text-orange-500">SEOV</span>
+                    <span class="text-white">DETECH</span>
+                </span>
+                <span class="text-[10px] font-bold tracking-[0.22em] text-slate-500 uppercase mt-1">
+                    Inovasi & Teknologi
+                </span>
+            </div>
+        </div>
     </div>
 
-    <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear flex-grow">
-        <nav class="mt-5 px-4 lg:px-4">
-            @foreach ($menuGroups as $groupIndex => $group)
+    {{-- Area Menu --}}
+    <div class="no-scrollbar flex-grow overflow-y-auto px-4 py-4">
+        <nav class="flex flex-col gap-8">
+            @foreach ($menuGroups as $group)
                 @php 
-                    $groupName = strtoupper($group['group']);
+                    // Kamus Terjemahan Nama Grup
+                    $groupNames = [
+                        'ADMINISTRATOR'   => 'ADMINISTRATOR',
+                        'DASHBOARD'       => 'PANEL UTAMA',
+                        'USER MANAGEMENT' => 'MANAJEMEN PENGGUNA',
+                        'MASTER DATA'     => 'DATA MASTER',
+                        'CONTENT'         => 'KONTEN',
+                        'MANAGEMENT'      => 'MANAJEMEN'
+                    ];
+
+                    $groupRaw = strtoupper($group['group']);
+                    $groupDisplay = $groupNames[$groupRaw] ?? $groupRaw;
                     $userLevel = strtolower(auth()->user()->level);
                 @endphp
 
-                <div class="mb-6">
-                    {{-- Judul Grup (Hanya tampil jika level sesuai) --}}
-                    @if ($groupName !== 'ADMINISTRATOR' || $userLevel === 'super admin')
-                        <h3 class="mb-4 ml-4 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest"
-                            x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered">
-                            {{ $group['group'] }}
-                        </h3>
+                @if (($groupRaw !== 'ADMINISTRATOR' || $userLevel === 'super admin') && 
+                     !in_array($groupRaw, ['SYSTEM SETTINGS', 'SETTING SYSTEM', 'SETTINGS']))
+                
+                <div class="flex flex-col gap-2">
+                    <h3 class="px-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ $groupDisplay }}</h3>
+                    <ul class="flex flex-col gap-1">
+                        @foreach ($group['items'] as $item)
+                            @php 
+                                // Kamus Terjemahan Nama Item
+                                $itemNames = [
+                                    'DASHBOARD'       => 'Dashboard',
+                                    'USER MANAGEMENT' => 'Kelola Pengguna',
+                                    'USERS'           => 'Pengguna',
+                                    'ROLES'           => 'Hak Akses',
+                                    'TESTIMONI'       => 'Testimoni',
+                                    'ARTICLE'         => 'Artikel',
+                                    'PORTFOLIO'       => 'Portofolio',
+                                    'MESSAGES'        => 'Pesan Masuk'
+                                ];
 
-                        <ul class="flex flex-col gap-2">
-                            @foreach ($group['items'] as $itemIndex => $item)
-                                {{-- Filter Item --}}
-                                @if (strtoupper($item['name']) !== 'SYSTEM SETTINGS')
-                                    @php 
-                                        $key = $groupIndex . '-' . $itemIndex; 
-                                        // Gunakan request()->routeIs() agar lebih akurat mendeteksi halaman aktif
-                                        $routePrefix = strtolower($item['name']);
-                                        $isActive = request()->routeIs('management.' . $routePrefix . '.*') || request()->url() == $item['path'];
-                                    @endphp
+                                $isActive = request()->url() == $item['path'];
+                                $itemRaw = strtoupper($item['name']);
+                                $itemDisplay = $itemNames[$itemRaw] ?? $item['name'];
+                            @endphp
 
-                                    <li class="relative">
-                                        {{-- Link Menu --}}
-                                        <a href="{{ $item['path'] }}"
-                                            class="group relative flex items-center rounded-lg px-3 py-2.5 font-medium duration-300 ease-in-out {{ $isActive ? 'bg-gray-100 dark:bg-gray-800 text-orange-500 dark:text-white' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 hover:text-orange-500' }}"
-                                            :class="{
-                                                'justify-start': $store.sidebar.isExpanded || $store.sidebar.isHovered,
-                                                'justify-center': !$store.sidebar.isExpanded && !$store.sidebar.isHovered
-                                            }">
-                                            <span class="flex-shrink-0 transition-colors duration-300 group-hover:text-orange-500 {{ $isActive ? 'text-orange-500' : '' }}">
-                                                {!! MenuHelper::getIconSvg($item['icon'] ?? 'dashboard') !!}
-                                            </span>
-                                            <span class="ml-3 transition-opacity duration-300"
-                                                x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered">
-                                                {{ $item['name'] }}
-                                            </span>
-                                        </a>
-                                    </li>
-                                @endif
-                            @endforeach
-                        </ul>
-                    @endif
+                            @if (!in_array($itemRaw, ['SYSTEM SETTINGS', 'SETTING SYSTEM', 'SETTINGS']))
+                            <li>
+                                <a href="{{ $item['path'] }}"
+                                    class="flex items-center rounded-2xl px-4 py-3.5 transition-all duration-200 {{ $isActive ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20 font-bold' : 'text-gray-500 hover:bg-orange-500/10 hover:text-orange-500 font-medium' }}">
+                                    <span class="shrink-0 scale-110">
+                                        {!! MenuHelper::getIconSvg($item['icon'] ?? 'dashboard') !!}
+                                    </span>
+                                    <span class="ml-4 text-sm whitespace-nowrap">{{ $itemDisplay }}</span>
+                                </a>
+                            </li>
+                            @endif
+                        @endforeach
+                    </ul>
                 </div>
+                @endif
             @endforeach
         </nav>
+    </div>
+
+    {{-- Tombol Keluar --}}
+    <div class="p-4 mt-auto border-t border-gray-50 dark:border-white/5">
+        <button type="button" 
+                onclick="window.confirmLogout()"
+                class="flex w-full items-center gap-4 px-4 py-4 rounded-2xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all duration-200 group">
+            <span class="shrink-0 transition-transform group-hover:-translate-x-1">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+            </span>
+            <span class="text-sm font-bold uppercase tracking-widest">Keluar Akun</span>
+        </button>
     </div>
 </aside>

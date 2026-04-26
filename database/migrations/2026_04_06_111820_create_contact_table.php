@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('contacts', function (Blueprint $table) {
             $table->id(); // bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT
             
-            $table->string('nama', 255); // varchar(255)
-            $table->string('email', 255); // varchar(255)
-            $table->string('telepon', 255); // varchar(255)
+            $table->string('nama', 100); // varchar(255)
+            $table->string('email', 100); // varchar(255)
+            $table->string('telepon', 15); // varchar(255)
             $table->text('alamat'); // text
             $table->text('pesan'); // text
             

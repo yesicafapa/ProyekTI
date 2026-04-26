@@ -26,15 +26,16 @@
 
         {{-- Grid Portofolio --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-            @forelse($portofolios as $item)
+            {{-- FIX: Tambahkan ->where('status', 1) agar data draft (status 0) tidak tampil --}}
+            @forelse($portofolios->where('status', 1) as $item)
                 <div class="group bg-[#1a110a]/40 backdrop-blur-md rounded-[2.5rem] p-8 border border-white/5 shadow-2xl hover:border-orange-500/30 transition-all duration-500">
                     
                     {{-- Thumbnail --}}
                     <div class="block rounded-[2rem] overflow-hidden border border-orange-900/20 mb-6 aspect-video bg-black shadow-lg">
                         @php
                             $imgPath = ($item->gambar && Storage::disk('public')->exists($item->gambar)) 
-                                       ? asset('storage/' . $item->gambar) 
-                                       : (str_contains($item->gambar, 'http') ? $item->gambar : "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015");
+                                        ? asset('storage/' . $item->gambar) 
+                                        : (str_contains($item->gambar, 'http') ? $item->gambar : "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015");
                         @endphp
                         <img src="{{ $imgPath }}" 
                              class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" 
@@ -56,7 +57,6 @@
                         </p>
 
                         <div class="pt-4">
-                            {{-- FIX: GANTI $item->slug MENJADI $item->id --}}
                             <a href="{{ route('frontend.portofolio.detail', $item->id) }}" class="text-orange-500 text-[10px] font-bold uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
                                 DETAIL PROJECT <span class="group-hover:translate-x-2 transition-transform">→</span>
                             </a>

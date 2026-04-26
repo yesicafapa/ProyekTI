@@ -16,9 +16,9 @@ return new class extends Migration
         $table->string('judul', 512)->nullable();
         $table->text('ringkasan')->nullable();
         $table->text('isi')->nullable();
-        $table->string('gambar', 255)->nullable();
+        $table->string('gambar', 100)->nullable();
         $table->tinyInteger('status')->nullable();
-        $table->string('thumbnail', 255)->nullable();
+        $table->string('thumbnail', 100)->nullable();
         $table->timestamp('upload_at')->nullable();
         $table->timestamp('created_at')->useCurrent();
         $table->unsignedBigInteger('user_id')->nullable();

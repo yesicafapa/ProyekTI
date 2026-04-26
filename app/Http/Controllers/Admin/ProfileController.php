@@ -13,7 +13,6 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        // Langsung ambil user yang sedang login
         return view('pages.profile', ['user' => Auth::user()]); 
     }
 
@@ -25,25 +24,27 @@ class ProfileController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // 1. Validasi Input (Tetap di Controller)
+        // 1. Validasi Input
         $request->validate([
-            'nama'     => 'required|string|max:100',
-            'email'    => 'required|email|unique:user,email,' . $user->id, 
-            'foto'     => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Tambah webp agar modern
-            'password' => 'nullable|confirmed|min:8', 
+            'nama'          => 'required|string|max:100',
+            'email'         => 'required|email|unique:user,email,' . $user->id, 
+            'foto'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            // FIX: password_lama WAJIB diisi (required) agar tidak bisa bypass password lama
+            'password_lama' => 'required', 
+            'password'      => 'nullable|confirmed|min:8', 
         ], [
-            'password.confirmed' => 'Konfirmasi password baru tidak cocok!',
-            'password.min' => 'Password minimal harus 8 karakter!',
+            'password_lama.required' => 'Password lama wajib diisi untuk verifikasi keamanan!',
+            'password.confirmed'     => 'Konfirmasi password baru tidak cocok!',
+            'password.min'           => 'Password minimal harus 8 karakter!',
         ]);
 
-        // 2. Eksekusi Logika di Model (Thin Controller)
-        // Kita panggil fungsi updateUser yang sudah kita buat di Model tadi
+        // 2. Eksekusi Logika di Model
+        // Jika return false (karena Hash::check gagal di Model), kirim error
         if (!$user->updateUser($request)) {
-            // Jika return false, berarti password lama salah
             return back()->with('error', 'Password lama yang Anda masukkan salah!');
         }
 
-        // 3. Berhasil
+        // 3. Jika Berhasil
         return back()->with('success', 'Profil berhasil diperbarui!');
     }
 }
