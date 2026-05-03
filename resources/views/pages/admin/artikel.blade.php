@@ -165,21 +165,31 @@
 
             confirmDeleteArtikel(e) {
                 const form = e.target.closest('form');
+                const isDark = document.documentElement.classList.contains('dark');
+                
                 Swal.fire({
                     title: 'Hapus Artikel?',
                     text: "Konten ini akan dihapus secara permanen dari sistem.",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#f97316',
-                    cancelButtonColor: '#334155',
-                    confirmButtonText: 'Ya, Hapus!',
-                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#f97316', 
+                    cancelButtonColor: isDark ? '#1a1a1a' : '#334155',
+                    confirmButtonText: 'YA, HAPUS!',
+                    cancelButtonText: 'BATAL',
                     reverseButtons: true,
+                    background: isDark ? '#111111' : '#ffffff',
+                    color: isDark ? '#ffffff' : '#475569',
                     customClass: {
-                        popup: 'rounded-[2rem] dark:bg-[#1e293b] dark:text-white',
+                        popup: 'rounded-[2.5rem] border border-slate-100 dark:border-white/5 shadow-2xl',
+                        confirmButton: 'rounded-xl px-8 py-3 font-bold uppercase tracking-widest',
+                        cancelButton: 'rounded-xl px-8 py-3 font-bold uppercase tracking-widest'
                     }
                 }).then((result) => {
-                    if (result.isConfirmed) form.submit();
+                    if (result.isConfirmed) {
+                        if (form) {
+                            form.submit();
+                        }
+                    }
                 });
             }
         }

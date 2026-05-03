@@ -32,18 +32,29 @@
     :class="$store.sidebar.isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
 
     {{-- Logo Section --}}
-    <div class="flex items-center h-24 px-8 shrink-0">
-        <div class="flex flex-col border-l-4 border-orange-500 pl-4">
+    {{-- Logo Section --}}
+    <div class="flex items-center justify-between h-24 px-8 shrink-0">
+        <div class="flex items-center gap-3">
+            {{-- Ikon Logo --}}
+            <img src="{{ asset('favicon.png') }}" alt="Logo SEOV DETECH" class="w-10 h-10 object-contain">
+            
             <div class="flex flex-col leading-none">
-                <span class="text-2xl font-black italic tracking-tighter uppercase">
-                    <span class="text-orange-500">SEOV</span>
-                    <span class="text-white">DETECH</span>
-                </span>
-                <span class="text-[10px] font-bold tracking-[0.22em] text-slate-500 uppercase mt-1">
-                    Inovasi & Teknologi
+                <span class="text-2xl font-black tracking-tighter uppercase">
+                    <span class="text-slate-800 dark:text-white">SEOV</span>
+                    <span class="text-orange-500">DETECH</span>
                 </span>
             </div>
         </div>
+
+        {{-- TOMBOL SILANG (Hanya muncul di Mobile) --}}
+        <button 
+            @click="$store.sidebar.toggleMobileOpen()" 
+            class="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-50 text-gray-500 hover:bg-orange-50 hover:text-orange-500 dark:bg-white/5 dark:text-gray-400 lg:hidden transition-colors">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
     </div>
 
     {{-- Area Menu --}}

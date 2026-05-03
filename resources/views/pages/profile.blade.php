@@ -85,29 +85,36 @@
                 <div class="overflow-hidden rounded-[2.5rem] border border-slate-100 bg-white shadow-xl shadow-slate-200/50 dark:border-white/5 dark:bg-[#1a1a1a] dark:shadow-none">
                     <div class="border-b border-slate-50 px-10 py-6 dark:border-white/5">
                         <h3 class="flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.2em] text-slate-800 dark:text-white">
-                            <span class="h-4 w-1.5 rounded-full bg-red-500"></span> Keamanan Akun
+                            <span class="h-4 w-1.5 rounded-full bg-red-500"></span> Keamanan & Password
                         </h3>
                     </div>
-                    <div class="space-y-8 p-10">
-                        <div class="space-y-2">
-                            <label class="ml-1 text-[10px] font-black uppercase tracking-[0.2em] text-red-500">Konfirmasi Password Saat Ini *</label>
-                            <input type="password" name="password_lama" required placeholder="••••••••"
-                                   class="w-full rounded-2xl border border-red-100 bg-red-50/30 p-4 text-sm font-bold text-slate-800 outline-none focus:border-red-500 transition-all dark:border-red-900/20 dark:bg-red-900/5 dark:text-white @error('password_lama') border-red-500 @enderror">
-                            @error('password_lama') <p class="ml-1 text-[10px] font-black uppercase text-red-500">{{ $message }}</p> @enderror
+                    <div class="p-10">
+                        <div class="mb-8 rounded-2xl bg-blue-50 p-4 dark:bg-blue-900/10">
+                            <p class="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                                <i class="mr-2 fas fa-info-circle"></i> Kosongkan password baru jika tidak ingin mengubahnya. Password lama hanya diperlukan untuk konfirmasi perubahan password.
+                            </p>
                         </div>
-                        
+
                         <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
                             <div class="space-y-2">
-                                <label class="ml-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Password Baru (Opsional)</label>
-                                <input type="password" name="password" placeholder="Min. 8 karakter"
+                                <label class="ml-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Password Baru</label>
+                                <input type="password" name="password" id="password_baru" placeholder="Min. 8 karakter"
                                        class="w-full rounded-2xl border border-slate-100 bg-slate-50 p-4 text-sm font-bold text-slate-800 outline-none focus:border-orange-500 transition-all dark:border-white/10 dark:bg-white/5 dark:text-white">
                                 @error('password') <p class="ml-1 text-[10px] font-black uppercase text-red-500">{{ $message }}</p> @enderror
                             </div>
                             <div class="space-y-2">
                                 <label class="ml-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Ulangi Password Baru</label>
-                                <input type="password" name="password_confirmation" placeholder="Harus identik"
+                                <input type="password" name="password_confirmation" placeholder="Konfirmasi password"
                                        class="w-full rounded-2xl border border-slate-100 bg-slate-50 p-4 text-sm font-bold text-slate-800 outline-none focus:border-orange-500 transition-all dark:border-white/10 dark:bg-white/5 dark:text-white">
                             </div>
+                        </div>
+
+                        {{-- Password Lama: Muncul/Wajib hanya jika password baru diisi --}}
+                        <div class="mt-8 space-y-2" id="old_password_container">
+                            <label class="ml-1 text-[10px] font-black uppercase tracking-[0.2em] text-red-500">Konfirmasi Password Saat Ini (Wajib Jika Ganti PW)</label>
+                            <input type="password" name="password_lama" id="password_lama" placeholder="••••••••"
+                                   class="w-full rounded-2xl border border-red-100 bg-red-50/30 p-4 text-sm font-bold text-slate-800 outline-none focus:border-red-500 transition-all dark:border-red-900/20 dark:bg-red-900/5 dark:text-white @error('password_lama') border-red-500 @enderror">
+                            @error('password_lama') <p class="ml-1 text-[10px] font-black uppercase text-red-500">{{ $message }}</p> @enderror
                         </div>
                     </div>
                 </div>
@@ -126,21 +133,34 @@
     </form>
 </div>
 
-{{-- SweetAlert Logic tetap sama, hanya styling konfirmasi disesuaikan --}}
+{{-- SweetAlert Logic --}}
 <div id="status-data" data-success="{{ session('success') }}" data-error="{{ session('error') }}" data-errors='@json($errors->all())' class="hidden"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Logic untuk mewajibkan password lama hanya jika password baru diisi
+        const pwBaru = document.getElementById('password_baru');
+        const pwLama = document.getElementById('password_lama');
+        
+        pwBaru.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                pwLama.setAttribute('required', 'required');
+            } else {
+                pwLama.removeAttribute('required');
+            }
+        });
+
+        // SweetAlert
         const dataEl = document.getElementById('status-data');
         const successMsg = dataEl.getAttribute('data-success');
         const errorMsg = dataEl.getAttribute('data-error');
         const vErrors = JSON.parse(dataEl.getAttribute('data-errors'));
 
         const swalConfig = {
-            confirmButtonColor: '#f97316', // orange-500
+            confirmButtonColor: '#f97316',
             customClass: {
-                popup: 'rounded-[2rem] font-poppins',
+                popup: 'rounded-[2rem]',
                 confirmButton: 'rounded-xl px-10 py-3 uppercase text-[10px] font-black tracking-widest'
             }
         };
@@ -161,11 +181,4 @@
         }
     });
 </script>
-
-<style>
-    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-    .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
-</style>
 @endsection

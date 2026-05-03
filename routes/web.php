@@ -108,7 +108,10 @@ Route::middleware(['auth'])->prefix('management')->group(function () {
         return view('pages.dashboard.ecommerce'); 
     })->name('dashboard');
 
+    // --- USER MANAGEMENT ---
     Route::resource('user-management', UserController::class)->names('user-management');
+    // Tambahan Route Toggle Status (Tanpa mengubah resource di atas)
+    Route::patch('/user-management/{id}/toggle', [UserController::class, 'toggleStatus'])->name('user-management.toggle');
    
     Route::resource('artikel', ArtikelController::class)->except(['show']);
     Route::resource('portofolio', PortofolioController::class)->except(['show']);
@@ -125,7 +128,6 @@ Route::middleware(['auth'])->prefix('management')->group(function () {
         });
 
         // PINTU 2: Nama rute tanpa 'admin.' (Untuk Sidebar / MenuHelper)
-        // Ini biar error "Route [contact.index] not defined" hilang selamanya
         Route::name('contact.')->group(function () {
             Route::get('/contact', 'index')->name('index');
             Route::patch('/contact/{id}/status', 'updateStatus')->name('updateStatus');

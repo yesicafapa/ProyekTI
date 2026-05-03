@@ -12,9 +12,10 @@
             </svg>
         </div>
 
-        <div class="container mx-auto relative z-10 max-w-4xl">
+        {{-- Container dikecilkan ke max-w-3xl agar lebih proporsional --}}
+        <div class="container mx-auto relative z-10 max-w-3xl">
             
-            {{-- TOMBOL KEMBALI (Sama seperti Portofolio) --}}
+            {{-- TOMBOL KEMBALI --}}
             <div class="mb-8">
                 <a href="{{ url('/') }}" class="inline-flex items-center gap-3 text-orange-500 hover:text-white transition-colors group">
                     <span class="text-lg group-hover:-translate-x-2 transition-transform">←</span>
@@ -22,55 +23,49 @@
                 </a>
             </div>
 
-            {{-- Judul BLOG --}}
-            <div class="mb-10">
-                <h2 class="text-4xl font-black tracking-[0.2em] text-white uppercase mb-4">Blog</h2>
-                <div class="h-1.5 w-28 bg-orange-500"></div>
+            {{-- Judul ARTIKEL (Berubah dari Blog) --}}
+            <div class="mb-12">
+                <h2 class="text-3xl font-black tracking-[0.2em] text-white uppercase mb-4">Artikel</h2>
+                <div class="h-1.5 w-20 bg-orange-500"></div>
             </div>
 
-            {{-- Container Scroll Blog (Vertikal ke Bawah) --}}
-            <div class="h-[750px] overflow-y-auto pr-6 custom-scrollbar space-y-16" style="scrollbar-gutter: stable;">
+            {{-- Container Scroll --}}
+            <div class="h-[700px] overflow-y-auto pr-4 custom-scrollbar space-y-10" style="scrollbar-gutter: stable;">
                 
                 @forelse($artikels as $artikel)
-                <article class="group">
-                    <a href="{{ route('frontend.blog.detail', $artikel->slug ?? $artikel->id) }}" class="block">
+                <article class="group relative">
+                    <a href="{{ route('frontend.blog.detail', $artikel->slug ?? $artikel->id) }}" class="flex flex-col md:flex-row gap-6 items-start">
                         
-                        {{-- Frame Gambar (Aspect Video) --}}
-                        <div class="relative aspect-video w-full overflow-hidden rounded-[2.5rem] bg-[#111] border border-white/5 shadow-2xl">
+                        {{-- Frame Gambar (Dikecilkan ukurannya) --}}
+                        <div class="relative w-full md:w-52 shrink-0 aspect-video md:aspect-square overflow-hidden rounded-3xl bg-[#111] border border-white/5 shadow-xl">
                             @php
                                 $img = ($artikel->thumbnail && Storage::disk('public')->exists($artikel->thumbnail)) 
                                         ? asset('storage/' . $artikel->thumbnail) 
                                         : "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070";
                             @endphp
                             <img src="{{ $img }}" 
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-all duration-700 opacity-80 group-hover:opacity-100" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-all duration-700 opacity-70 group-hover:opacity-100" 
                                  alt="{{ $artikel->judul }}">
-                            
-                            <div class="absolute top-6 left-6">
-                                <span class="bg-orange-500 text-black text-[9px] font-black px-5 py-2 rounded-full uppercase tracking-widest shadow-lg">
-                                    Insight
-                                </span>
-                            </div>
                         </div>
 
                         {{-- Teks Konten --}}
-                        <div class="mt-8 space-y-4 px-2">
-                            <div class="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest">
+                        <div class="flex-1 space-y-3 pt-2">
+                            <div class="flex items-center gap-3 text-[9px] font-bold uppercase tracking-widest">
                                 <span class="text-orange-500">Tech Update</span>
                                 <span class="text-slate-600">/</span>
                                 <span class="text-slate-500">{{ $artikel->created_at ? $artikel->created_at->format('M d, Y') : date('M d, Y') }}</span>
                             </div>
                             
-                            <h4 class="text-3xl font-bold text-white leading-tight group-hover:text-orange-500 transition-colors uppercase">
+                            <h4 class="text-xl font-bold text-white leading-tight group-hover:text-orange-500 transition-colors uppercase">
                                 {{ $artikel->judul }}
                             </h4>
                             
-                            <p class="text-base text-slate-400 font-medium line-clamp-2 leading-relaxed opacity-80">
-                                {{ $artikel->ringkasan ?? Str::limit(strip_tags($artikel->konten), 160) }}
+                            <p class="text-sm text-slate-400 font-medium line-clamp-2 leading-relaxed opacity-80">
+                                {{ $artikel->ringkasan ?? Str::limit(strip_tags($artikel->konten), 120) }}
                             </p>
                             
-                            <div class="pt-4 flex items-center text-[10px] font-black uppercase text-orange-500 tracking-widest transition-all group-hover:gap-4">
-                                Read Full Article <span class="ml-2 group-hover:translate-x-2 transition-transform">→</span>
+                            <div class="pt-2 flex items-center text-[9px] font-black uppercase text-orange-500 tracking-widest transition-all group-hover:gap-4">
+                                Read More <span class="ml-2 group-hover:translate-x-1 transition-transform">→</span>
                             </div>
                         </div>
                     </a>
@@ -86,7 +81,7 @@
 
 <style>
     /* Scrollbar Oranye Tipis */
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar { width: 3px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #F97316; border-radius: 10px; }
 </style>

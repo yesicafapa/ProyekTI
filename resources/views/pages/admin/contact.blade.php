@@ -16,6 +16,13 @@
     
     /* Memastikan z-index SweetAlert tetap berada di lapisan paling atas */
     .swal2-container { z-index: 99999 !important; }
+
+    /* Efek hover untuk teks pesan agar user tahu bisa diklik */
+    .clickable-message:hover {
+        color: #f97316; /* Orange-500 */
+        text-decoration: underline;
+        transition: all 0.3s ease;
+    }
 </style>
 
 <div class="mx-auto max-w-screen-2xl p-4 md:p-6" x-cloak>
@@ -59,7 +66,10 @@
                             </div>
                         </td>
                         <td class="px-10 py-6">
-                            <div class="text-[13px] text-slate-500 dark:text-slate-400 italic line-clamp-2 max-w-xs leading-relaxed">
+                            {{-- Click untuk Detail - Rata Tengah --}}
+                            <div onclick="showDetail('{{ $item->nama }}', `{{ $item->pesan }}`)" 
+                                 class="text-[13px] text-slate-500 dark:text-slate-400 italic line-clamp-2 max-w-xs leading-relaxed cursor-pointer clickable-message"
+                                 title="Klik untuk lihat detail pesan">
                                 "{{ $item->pesan }}"
                             </div>
                         </td>
@@ -77,16 +87,22 @@
                         </td>
                         <td class="px-10 py-6 text-right">
                             <div class="flex items-center justify-end gap-3">
-                                {{-- LOGIKA MEMBERSIHKAN NOMOR WA --}}
                                 @php
+                                    // Logika Nomor WA & Pesan Otomatis Resmi
                                     $nomorWa = preg_replace('/[^0-9]/', '', $item->telepon);
                                     if (str_starts_with($nomorWa, '0')) {
                                         $nomorWa = '62' . substr($nomorWa, 1);
                                     }
+
+                                    $templatePesan = "Halo *" . $item->nama . "*,\n\n" .
+                                                     "Terima kasih telah menghubungi *CV SEOVDETECH*. Kami telah menerima pesan Anda mengenai:\n" .
+                                                     "\"" . $item->pesan . "\"\n\n" .
+                                                     "Admin kami akan segera membantu diskusi proyek Anda. Mohon tunggu sebentar ya!";
+                                    
+                                    $urlWa = "https://api.whatsapp.com/send?phone=" . $nomorWa . "&text=" . urlencode($templatePesan);
                                 @endphp
 
-                                {{-- LINK WA --}}
-                                <a href="https://api.whatsapp.com/send?phone={{ $nomorWa }}" 
+                                <a href="{{ $urlWa }}" 
                                    target="_blank" 
                                    class="flex h-10 w-10 items-center justify-center rounded-xl bg-green-500 text-white shadow-lg shadow-green-500/20 hover:scale-110 active:scale-95 transition-all"
                                    title="Hubungi via WhatsApp">
@@ -95,11 +111,10 @@
                                     </svg>
                                 </a>
 
-                                {{-- TOMBOL UPDATE STATUS --}}
                                 @if(!$item->is_responded)
                                 <form action="{{ route('contact.updateStatus', $item->id) }}" method="POST">
                                     @csrf @method('PATCH')
-                                    <button type="button" @click="confirmDone($event, '{{ $item->nama }}')" 
+                                    <button type="button" onclick="confirmDone(event, '{{ $item->nama }}')" 
                                             class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-400 hover:border-orange-500 hover:text-orange-500 hover:bg-orange-50 transition-all dark:border-white/10 dark:hover:bg-orange-500/5" 
                                             title="Tandai Sudah Dibalas">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -109,10 +124,9 @@
                                 </form>
                                 @endif
 
-                                {{-- TOMBOL HAPUS --}}
                                 <form action="{{ route('contact.destroy', $item->id) }}" method="POST">
                                     @csrf @method('DELETE')
-                                    <button type="button" @click="confirmDeleteMsg($event, '{{ $item->nama }}')" 
+                                    <button type="button" onclick="confirmDeleteMsg(event, '{{ $item->nama }}')" 
                                             class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-400 hover:border-red-500 hover:text-red-500 hover:bg-red-50 transition-all dark:border-white/10 dark:hover:bg-red-500/5" 
                                             title="Hapus Pesan">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -142,28 +156,62 @@
 </div>
 
 <script>
+        /**
+     * Tampilkan Detail Pesan Lengkap
+     */
+    function showDetail(sender, message) {
+        const isDark = document.documentElement.classList.contains('dark');
+        
+        Swal.fire({
+            title: `Detail Pesan: ${sender}`,
+            html: `
+                <div class="text-center p-6 ${isDark ? 'bg-white/5' : 'bg-slate-100'} rounded-2xl border ${isDark ? 'border-white/10' : 'border-slate-200'} mt-4">
+                    <p style="color: ${isDark ? '#cbd5e1' : '#1e293b'} !important;" class="font-medium leading-relaxed whitespace-pre-line text-[15px] text-center">
+                        ${message}
+                    </p>
+                </div>
+            `,
+            icon: 'info',
+            confirmButtonText: 'SELESAI MEMBACA',
+            confirmButtonColor: '#f97316',
+            background: isDark ? '#111111' : '#ffffff',
+            color: isDark ? '#ffffff' : '#475569',
+            customClass: { 
+                popup: 'rounded-[2.5rem] border border-slate-100 dark:border-white/5 shadow-2xl',
+                title: 'font-bold',
+                confirmButton: 'rounded-xl px-10 py-3 font-extrabold uppercase tracking-widest text-xs',
+            }
+        });
+    }
+
     /**
      * Konfirmasi Selesai/Sudah Dibalas
      */
     function confirmDone(e, sender) {
         const form = e.target.closest('form');
+        const isDark = document.documentElement.classList.contains('dark');
+        
         Swal.fire({
             title: 'Tandai Selesai?',
             text: `Apakah Anda sudah membalas pesan dari ${sender}?`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#f97316',
-            cancelButtonColor: '#334155',
-            confirmButtonText: 'Ya, Sudah!',
-            cancelButtonText: 'Belum',
+            cancelButtonColor: isDark ? '#1a1a1a' : '#334155',
+            confirmButtonText: 'YA, SUDAH!',
+            cancelButtonText: 'BELUM',
             reverseButtons: true,
+            background: isDark ? '#111111' : '#ffffff',
+            color: isDark ? '#ffffff' : '#475569',
             customClass: { 
-                popup: 'rounded-[2rem] dark:bg-[#1e293b] dark:text-white',
-                confirmButton: 'rounded-xl px-6 py-3 font-bold',
-                cancelButton: 'rounded-xl px-6 py-3 font-bold'
+                popup: 'rounded-[2.5rem] border border-slate-100 dark:border-white/5 shadow-2xl',
+                confirmButton: 'rounded-xl px-8 py-3 font-bold uppercase tracking-widest',
+                cancelButton: 'rounded-xl px-8 py-3 font-bold uppercase tracking-widest'
             }
         }).then((result) => {
-            if (result.isConfirmed) form.submit();
+            if (result.isConfirmed) {
+                if (form) form.submit();
+            }
         });
     }
 
@@ -172,23 +220,29 @@
      */
     function confirmDeleteMsg(e, sender) {
         const form = e.target.closest('form');
+        const isDark = document.documentElement.classList.contains('dark');
+        
         Swal.fire({
             title: 'Hapus Pesan?',
-            text: `Pesan dari ${sender} akan dihapus secara permanen.`,
+            text: `Pesan dari ${sender} akan dihapus secara permanen dari sistem.`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#334155',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal',
+            confirmButtonColor: '#ef4444', // Merah untuk aksi hapus
+            cancelButtonColor: isDark ? '#1a1a1a' : '#334155',
+            confirmButtonText: 'YA, HAPUS!',
+            cancelButtonText: 'BATAL',
             reverseButtons: true,
+            background: isDark ? '#111111' : '#ffffff',
+            color: isDark ? '#ffffff' : '#475569',
             customClass: { 
-                popup: 'rounded-[2rem] dark:bg-[#1e293b] dark:text-white',
-                confirmButton: 'rounded-xl px-6 py-3 font-bold',
-                cancelButton: 'rounded-xl px-6 py-3 font-bold'
+                popup: 'rounded-[2.5rem] border border-slate-100 dark:border-white/5 shadow-2xl',
+                confirmButton: 'rounded-xl px-8 py-3 font-bold uppercase tracking-widest',
+                cancelButton: 'rounded-xl px-8 py-3 font-bold uppercase tracking-widest'
             }
         }).then((result) => {
-            if (result.isConfirmed) form.submit();
+            if (result.isConfirmed) {
+                if (form) form.submit();
+            }
         });
     }
 </script>

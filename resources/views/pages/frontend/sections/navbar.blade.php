@@ -25,7 +25,7 @@
                 {{-- Link ke Home --}}
                 <a href="{{ route('home') }}" 
                    class="text-base font-black uppercase tracking-widest hover:text-orange-500 transition-all {{ request()->routeIs('home') ? 'text-orange-500' : 'text-white' }}">
-                   Home
+                   Beranda
                 </a>
 
                 {{-- Link ke Halaman Portofolio --}}
@@ -37,14 +37,14 @@
                 {{-- Link ke Halaman Blog --}}
                 <a href="{{ route('frontend.blog.index') }}" 
                    class="text-base font-black uppercase tracking-widest hover:text-orange-500 transition-all {{ request()->routeIs('frontend.blog.*') ? 'text-orange-500' : 'text-white' }}">
-                   Blog
+                   Artikel
                 </a>
             </div>
 
             {{-- BUTTON CONTACT --}}
             <a href="{{ route('frontend.contact') }}" 
                class="bg-orange-500 text-black px-10 py-4 rounded-xl text-sm font-black uppercase tracking-widest hover:bg-white transition-all duration-300 shadow-xl shadow-orange-500/20">
-               Contact Us
+               Kontak Kami
             </a>
         </div>
 
@@ -63,12 +63,12 @@
          x-transition:enter-end="opacity-100 translate-y-0"
          class="md:hidden bg-[#0d0d0d] border-t border-white/5 px-6 py-10 space-y-8">
         
-        <a href="{{ route('home') }}" class="block font-black uppercase text-base tracking-widest {{ request()->routeIs('home') ? 'text-orange-500' : 'text-white' }}">Home</a>
+        <a href="{{ route('home') }}" class="block font-black uppercase text-base tracking-widest {{ request()->routeIs('home') ? 'text-orange-500' : 'text-white' }}">Beranda</a>
         
         <a href="{{ route('frontend.portofolio.index') }}" class="block font-black uppercase text-base tracking-widest {{ request()->routeIs('frontend.portofolio.*') ? 'text-orange-500' : 'text-white' }}">Portfolio</a>
         
-        <a href="{{ route('frontend.blog.index') }}" class="block font-black uppercase text-base tracking-widest {{ request()->routeIs('frontend.blog.*') ? 'text-orange-500' : 'text-white' }}">Blog</a>
+        <a href="{{ route('frontend.blog.index') }}" class="block font-black uppercase text-base tracking-widest {{ request()->routeIs('frontend.blog.*') ? 'text-orange-500' : 'text-white' }}">Artikel</a>
         
-        <a href="{{ route('frontend.contact') }}" class="block text-orange-500 font-black uppercase text-base tracking-widest">Contact Us</a>
+        <a href="{{ route('frontend.contact') }}" class="block text-orange-500 font-black uppercase text-base tracking-widest">Kontak Kami</a>
     </div>
 </nav>

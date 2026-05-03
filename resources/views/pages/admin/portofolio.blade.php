@@ -161,24 +161,44 @@
             },
 
             confirmDeletePorto(e) {
-                const form = e.target.closest('form');
-                Swal.fire({
-                    title: 'Hapus Portofolio?',
-                    text: "Data ini akan dihapus secara permanen dari sistem.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#f97316',
-                    cancelButtonColor: '#334155',
-                    confirmButtonText: 'Ya, Hapus!',
-                    cancelButtonText: 'Batal',
-                    reverseButtons: true,
-                    customClass: {
-                        popup: 'rounded-[2rem] dark:bg-[#1e293b] dark:text-white',
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) form.submit();
-                });
+    const form = e.target.closest('form');
+    const isDark = document.documentElement.classList.contains('dark');
+    
+    Swal.fire({
+        title: 'Hapus Portofolio?',
+        text: "Data ini akan dihapus secara permanen dari sistem.",
+        icon: 'warning', // Pakai tanda seru sesuai gambar terbaru
+        showCancelButton: true,
+        
+        // Warna Tombol Konfirmasi (Orange)
+        confirmButtonColor: '#f97316', 
+        
+        // Warna Tombol Batal (Kondisional)
+        // Kalau Terang: Pakai Navy (#334155), Kalau Gelap: Pakai Hitam (#1a1a1a)
+        cancelButtonColor: isDark ? '#1a1a1a' : '#334155',
+        
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true,
+        
+        // Background & Teks (Kondisional)
+        background: isDark ? '#111111' : '#ffffff',
+        color: isDark ? '#ffffff' : '#475569',
+        
+        customClass: {
+            // Radius 2rem agar pas dengan desain kotak di gambar
+            popup: 'rounded-[2rem] border border-slate-100 dark:border-white/5 shadow-2xl',
+            confirmButton: 'rounded-xl px-8 py-3 font-bold',
+            cancelButton: 'rounded-xl px-8 py-3 font-bold'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (form) {
+                form.submit();
             }
+        }
+    });
+}
         }
     }
 </script>

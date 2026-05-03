@@ -38,18 +38,18 @@
 
             {{-- KOLOM 2: NAVIGATION --}}
             <div class="space-y-8 lg:pl-10">
-                <h4 class="text-xs font-black text-orange-500 uppercase tracking-[0.3em]">Navigation</h4>
+                <h4 class="text-xs font-black text-orange-500 uppercase tracking-[0.3em]">Navigasi</h4>
                 <ul class="space-y-4">
-                    <li><a href="#" class="text-sm text-slate-400 hover:text-white transition-colors font-medium">Home</a></li>
-                    <li><a href="#services" class="text-sm text-slate-400 hover:text-white transition-colors font-medium">Our Services</a></li>
+                    <li><a href="{{ route('home') }}" class="text-sm text-slate-400 hover:text-white transition-colors font-medium">Beranda</a></li>
+                    <li><a href="#services" class="text-sm text-slate-400 hover:text-white transition-colors font-medium">Layanan Kami</a></li>
                     <li><a href="#portfolio" class="text-sm text-slate-400 hover:text-white transition-colors font-medium">Portfolio</a></li>
-                    <li><a href="#blog" class="text-sm text-slate-400 hover:text-white transition-colors font-medium">Latest Blog</a></li>
+                    <li><a href="#blog" class="text-sm text-slate-400 hover:text-white transition-colors font-medium">Artikel Terbaru</a></li>
                 </ul>
             </div>
 
             {{-- KOLOM 3: EXPERTISE --}}
             <div class="space-y-8">
-                <h4 class="text-xs font-black text-orange-500 uppercase tracking-[0.3em]">Expertise</h4>
+                <h4 class="text-xs font-black text-orange-500 uppercase tracking-[0.3em]">Keahlian</h4>
                 <ul class="space-y-4 text-sm text-slate-400 font-medium">
                     <li class="hover:text-white transition-colors cursor-default">Web Development</li>
                     <li class="hover:text-white transition-colors cursor-default">Mobile Apps (Android)</li>
@@ -60,10 +60,10 @@
 
             {{-- KOLOM 4: GET IN TOUCH --}}
             <div class="space-y-8">
-                <h4 class="text-xs font-black text-orange-500 uppercase tracking-[0.3em]">Get In Touch</h4>
+                <h4 class="text-xs font-black text-orange-500 uppercase tracking-[0.3em]">Hubungi Kami</h4>
                 <div class="space-y-5">
                     <div>
-                        <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">Office</p>
+                        <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">Kantor</p>
                         <p class="text-sm text-slate-400 font-medium">Madiun, Jawa Timur, Indonesia</p>
                     </div>
                     <div>
@@ -71,7 +71,7 @@
                         <p class="text-sm text-white font-black hover:text-orange-500 transition-colors">hello@seovdetech.com</p>
                     </div>
                     <div>
-                        <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">Contact</p>
+                        <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">Kontak</p>
                         <p class="text-xl text-orange-500 font-black tracking-tighter">+62 812-3456-7890</p>
                     </div>
                 </div>
@@ -83,7 +83,6 @@
             <p class="text-[10px] font-bold text-slate-600 uppercase tracking-[0.2em] text-center">
                 &copy; {{ date('Y') }} CV. SEOV KREASI NUSANTARA. ALL RIGHTS RESERVED.
             </p>
-            {{-- Developed by Yesicafapa Sudah Dihapus --}}
         </div>
     </div>
 </footer>

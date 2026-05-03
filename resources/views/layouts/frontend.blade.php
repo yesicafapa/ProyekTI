@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Seov Detech - Innovative IT Solutions</title>
 
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -52,7 +54,8 @@
 
     @include('pages.frontend.sections.footer')
 
-    <a href="https://wa.me/628981500648" class="fixed bottom-6 right-6 z-50 bg-green-500 p-3 rounded-full shadow-lg hover:scale-110 transition">
+    {{-- Floating WhatsApp Button --}}
+    <a href="https://wa.me/628981500648" class="fixed bottom-6 right-6 z-50 bg-green-500 p-3 rounded-full shadow-lg hover:scale-110 transition duration-300">
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="w-8 h-8" alt="WhatsApp">
     </a>
 

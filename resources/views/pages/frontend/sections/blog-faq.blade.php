@@ -15,7 +15,7 @@
             {{-- KOLOM KIRI: BLOG  --}}
             <div class="lg:col-span-5 w-full">
                 <div class="mb-10">
-                    <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">Blog</h2>
+                    <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">Artikel</h2>
                     <div class="h-1.5 w-28 bg-orange-500"></div>
                 </div>
                 
@@ -68,7 +68,7 @@
 {{-- KOLOM KANAN: FAQ --}}
 <div class="lg:col-span-7" x-data="{ activeFaq: null }">
     <div class="mb-10">
-        <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">FAQ</h2>
+        <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">PERTANYAAN UMUM</h2>
         <div class="h-1.5 w-28 bg-orange-500"></div>
     </div>
     

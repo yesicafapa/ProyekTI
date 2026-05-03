@@ -42,12 +42,12 @@
                 <span class="text-white">Indonesia</span>
             </h1>
             <p class="text-sm lg:text-base text-slate-400 max-w-lg leading-relaxed mb-10 font-medium">
-                Innovation meets technology to help your business grow smarter and faster! We're your go-to IT partner, bringing you efficient, creative, and cutting-edge tech solutions.
+                Inovasi bertemu teknologi untuk membantu bisnis Anda tumbuh lebih cerdas dan lebih cepat! Kami adalah mitra IT terpercaya Anda, menghadirkan solusi teknologi yang efisien, kreatif, dan mutakhir.
             </p>
             <div>
                 {{-- PERBAIKAN: href sekarang menggunakan route Laravel --}}
                 <a href="{{ route('frontend.contact') }}" class="px-10 py-3 border border-white/20 text-white font-bold rounded-full hover:bg-white hover:text-black transition-all duration-500 uppercase text-[10px] tracking-widest bg-white/5 backdrop-blur-sm">
-                    Contact Us
+                    Kontak Kami
                 </a>
             </div>
         </div>

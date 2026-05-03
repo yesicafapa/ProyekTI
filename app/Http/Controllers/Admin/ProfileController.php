@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -29,19 +30,28 @@ class ProfileController extends Controller
             'nama'          => 'required|string|max:100',
             'email'         => 'required|email|unique:user,email,' . $user->id, 
             'foto'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            // FIX: password_lama WAJIB diisi (required) agar tidak bisa bypass password lama
-            'password_lama' => 'required', 
+            
+            // LOGIKA FIX: 
+            // password_lama wajib diisi (required) HANYA JIKA kolom 'password' (password baru) diisi.
+            'password_lama' => [
+                $request->filled('password') ? 'required' : 'nullable',
+                function ($attribute, $value, $fail) use ($user) {
+                    if ($value && !Hash::check($value, $user->password)) {
+                        $fail('Password lama yang Anda masukkan salah!');
+                    }
+                },
+            ],
             'password'      => 'nullable|confirmed|min:8', 
         ], [
-            'password_lama.required' => 'Password lama wajib diisi untuk verifikasi keamanan!',
+            'password_lama.required' => 'Password lama wajib diisi untuk verifikasi perubahan password!',
             'password.confirmed'     => 'Konfirmasi password baru tidak cocok!',
             'password.min'           => 'Password minimal harus 8 karakter!',
         ]);
 
         // 2. Eksekusi Logika di Model
-        // Jika return false (karena Hash::check gagal di Model), kirim error
+        // Panggil method updateUser di Model User
         if (!$user->updateUser($request)) {
-            return back()->with('error', 'Password lama yang Anda masukkan salah!');
+            return back()->with('error', 'Terjadi kesalahan saat memperbarui profil!');
         }
 
         // 3. Jika Berhasil

@@ -19,7 +19,7 @@
             
             {{-- Header Section --}}
             <div class="text-center mb-16">
-                <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">Contact Us</h2>
+                <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">Kontak Kami</h2>
                 <div class="h-1.5 w-28 bg-orange-500 mx-auto mb-6"></div>
                 <h1 class="text-4xl lg:text-6xl font-black text-white uppercase tracking-tighter leading-tight">
                     Mari Mulai Project <span class="text-orange-500">Hebat</span> Anda.
@@ -35,13 +35,13 @@
                     {{-- Input Nama & Email --}}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-3">
-                            <label class="text-orange-500 text-[10px] font-black uppercase tracking-widest ml-4">Full Name</label>
+                            <label class="text-orange-500 text-[10px] font-black uppercase tracking-widest ml-4">Nama Lengkap</label>
                             {{-- FIX: name="name" diganti jadi name="nama" --}}
                             <input type="text" name="nama" required placeholder="Masukkan nama anda..." 
                                 class="w-full bg-[#0a0a0a] border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-orange-500 transition-all font-medium placeholder:text-white/20">
                         </div>
                         <div class="space-y-3">
-                            <label class="text-orange-500 text-[10px] font-black uppercase tracking-widest ml-4">Email Address</label>
+                            <label class="text-orange-500 text-[10px] font-black uppercase tracking-widest ml-4">Alamat Email</label>
                             <input type="email" name="email" required placeholder="example@mail.com" 
                                 class="w-full bg-[#0a0a0a] border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-orange-500 transition-all font-medium placeholder:text-white/20">
                         </div>
@@ -50,13 +50,13 @@
                     {{-- Input Telepon & Alamat --}}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-3">
-                            <label class="text-orange-500 text-[10px] font-black uppercase tracking-widest ml-4">Phone Number / WA</label>
+                            <label class="text-orange-500 text-[10px] font-black uppercase tracking-widest ml-4">Nomor Telepon / WA</label>
                             {{-- FIX: name="phone" diganti jadi name="telepon" --}}
                             <input type="text" name="telepon" required placeholder="0812xxxxxxx" 
                                 class="w-full bg-[#0a0a0a] border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-orange-500 transition-all font-medium placeholder:text-white/20">
                         </div>
                         <div class="space-y-3">
-                            <label class="text-orange-500 text-[10px] font-black uppercase tracking-widest ml-4">Your Address / City</label>
+                            <label class="text-orange-500 text-[10px] font-black uppercase tracking-widest ml-4">Alamat Lengkap</label>
                             {{-- FIX: name="address" diganti jadi name="alamat" --}}
                             <input type="text" name="alamat" required placeholder="Kota atau alamat lengkap anda..." 
                                 class="w-full bg-[#0a0a0a] border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-orange-500 transition-all font-medium placeholder:text-white/20">
@@ -65,7 +65,7 @@
 
                     {{-- Input Pesan --}}
                     <div class="space-y-3">
-                        <label class="text-orange-500 text-[10px] font-black uppercase tracking-widest ml-4">Message Details</label>
+                        <label class="text-orange-500 text-[10px] font-black uppercase tracking-widest ml-4">Detail Pesan</label>
                         {{-- FIX: name="message" diganti jadi name="pesan" --}}
                         <textarea name="pesan" rows="5" required placeholder="Tuliskan detail project anda disini..." 
                             class="w-full bg-[#0a0a0a] border border-white/10 rounded-[2rem] px-6 py-4 text-white focus:outline-none focus:border-orange-500 transition-all font-medium placeholder:text-white/20"></textarea>
@@ -73,7 +73,7 @@
 
                     <div class="pt-4">
                         <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-black font-black uppercase py-5 rounded-2xl tracking-[0.2em] text-xs transition-all shadow-xl shadow-orange-600/20 active:scale-95">
-                            Send Message Now
+                            Kirim Pesan
                         </button>
                     </div>
                 </form>

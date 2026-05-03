@@ -6,31 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('contacts', function (Blueprint $table) {
-            $table->id(); // bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT
-            
-            $table->string('nama', 100); // varchar(255)
-            $table->string('email', 100); // varchar(255)
-            $table->string('telepon', 15); // varchar(255)
-            $table->text('alamat'); // text
-            $table->text('pesan'); // text
-            
-            // tinyint(1) NOT NULL DEFAULT 0
-            $table->tinyInteger('is_responded')->default(0); 
-            
-            // Mencakup created_at dan updated_at
-            $table->timestamps(); 
+            $table->id(); 
+            $table->string('nama', 50)->nullable(); 
+            $table->string('email', 30)->nullable(); 
+            $table->string('telepon', 15)->nullable(); 
+            $table->string('alamat', 120)->nullable(); 
+            $table->text('pesan')->nullable(); 
+            $table->tinyInteger('is_responded')->nullable(); 
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('contacts');

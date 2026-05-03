@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('portofolio', function (Blueprint $table) {
@@ -19,17 +16,13 @@ return new class extends Migration
             $table->string('gambar', 100)->nullable();
             $table->tinyInteger('status')->nullable();
             $table->timestamp('updated_at')->nullable();
-            $table->timestamp('created_at')->useCurrent();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->timestamp('created_at')->nullable();
+            $table->unsignedBigInteger('user_id');
 
-            // Relasi ke tabel user
             $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('portofolio');

@@ -16,7 +16,7 @@
         {{-- Header Section --}}
         <div class="mb-16">
             {{-- Ukuran dinaikkan ke text-base (16px) agar lebih tegas --}}
-            <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">Our Services</h2>
+            <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">Layanan Kami</h2>
             <div class="h-1.5 w-28 bg-orange-500"></div> {{-- Garis dipertebal & diperlebar --}}
         </div>
 

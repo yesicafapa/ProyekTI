@@ -37,7 +37,7 @@
         
         {{-- HEADER SECTION --}}
         <div class="mb-16 flex flex-col items-center text-center">
-            <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">Testimonials</h2>
+            <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">Testimoni</h2>
             <div class="h-1.5 w-28 bg-orange-500"></div>
         </div>
         

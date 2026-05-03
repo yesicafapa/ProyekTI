@@ -8,12 +8,15 @@
 
     <title>{{ $title ?? 'Admin Panel' }} | CV SEOVDETECH</title>
 
+    {{-- TAMBAHKAN BARIS INI --}}
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+
     {{-- Fonts: Menggunakan Poppins agar sesuai dengan branding profesional --}}
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{-- Script Pencegah Flicker: Langsung eksekusi sebelum body dirender --}}
+    {{-- Script Pencegah Flicker --}}
     <script>
         (function() {
             const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -39,7 +42,7 @@
         /* 2. Hilangkan outline biru default browser pada semua elemen */
         *:focus {
             outline: none !important;
-            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2) !important; /* Ring orange transparan */
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2) !important;
         }
 
         /* 3. Perbaiki warna scrollbar agar senada dengan tema dark */
@@ -71,18 +74,14 @@
 
 <body class="h-full font-sans antialiased bg-white dark:bg-[#0d0d0d] text-slate-800 dark:text-gray-100 transition-colors duration-300">
 
-    {{-- Preloader Dihapus: Halaman akan langsung tampil (Instant Load) --}}
-
     <main class="min-h-screen">
         @yield('content')
     </main>
 
     @stack('scripts')
 
-    {{-- Script Tambahan: Mencegah warna biru pada elemen input/select saat diklik --}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Memastikan elemen form menggunakan aksen orange secara programmatik
             const inputs = document.querySelectorAll('input, select, textarea');
             inputs.forEach(el => {
                 el.style.accentColor = '#f97316';

@@ -4,7 +4,7 @@
 <div class="bg-[#0a0a0a] min-h-screen pt-20">
     <section class="relative py-24 px-6 lg:px-20 overflow-hidden font-['Poppins']">
         
-        {{-- DEKORASI BACKGROUND --}}
+        {{-- DEKORASI BACKGROUND (Tetap) --}}
         <div class="absolute inset-0 z-0 pointer-events-none opacity-40">
             <svg class="w-full h-full" viewBox="0 0 1920 1080" preserveAspectRatio="none" fill="none">
                 <path d="M0 40 H500 L580 10 H1340 L1420 70 H1920" stroke="#F97316" stroke-width="3" opacity="0.4"/>
@@ -22,90 +22,95 @@
                 </a>
             </div>
 
-            {{-- 2. HEADER: DETAIL BLOG --}}
+            {{-- 2. HEADER: DETAIL ARTIKEL --}}
             <div class="mb-16">
-                <h2 class="text-4xl font-black tracking-[0.2em] text-white uppercase mb-4">Detail Blog</h2>
+                <h2 class="text-4xl font-black tracking-[0.2em] text-white uppercase mb-4">Detail Artikel</h2>
                 <div class="h-1.5 w-32 bg-orange-500"></div>
             </div>
 
-            <div class="max-w-5xl mx-auto">
-                {{-- KONTEN UTAMA ARTIKEL --}}
+            {{-- PEMBATAS LEBAR KONTEN (max-w-3xl adalah standar emas untuk keterbacaan artikel) --}}
+            <div class="max-w-3xl mx-auto">
+                
                 <div class="mb-24">
-                    <div class="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.3em] text-orange-500 mb-6">
-                        <span>News</span>
-                        <span class="text-white/20">/</span>
-                        <span class="text-slate-400">{{ $artikel->created_at->format('M d, Y') }}</span>
+                    {{-- Badge & Date --}}
+                    <div class="flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.2em] mb-8">
+                        <span class="bg-orange-500 text-black px-3 py-1 rounded-sm">Tech Insight</span>
+                        <span class="text-slate-500">{{ $artikel->created_at->format('M d, Y') }}</span>
                     </div>
 
-                    <h1 class="text-4xl md:text-6xl font-black text-white uppercase leading-[1.1] mb-10 tracking-tighter">
+                    {{-- Judul Artikel: Dibuat lebih solid --}}
+                    <h1 class="text-3xl md:text-5xl font-black text-white uppercase leading-tight mb-12 tracking-tight">
                         {{ $artikel->judul }}
                     </h1>
 
-                    {{-- Gambar Utama --}}
-                    <div class="relative aspect-video w-full overflow-hidden rounded-[3rem] bg-[#111] border border-white/5 shadow-2xl mb-12">
+                    {{-- Gambar Utama: Aspect Ratio Cinematic (21:9) agar tidak memakan terlalu banyak ruang vertikal --}}
+                    <div class="relative aspect-[21/9] w-full overflow-hidden rounded-3xl bg-[#111] border border-white/5 shadow-2xl mb-12">
                         @php
                             $mainImg = ($artikel->thumbnail && Storage::disk('public')->exists($artikel->thumbnail)) 
                                     ? asset('storage/' . $artikel->thumbnail) 
                                     : "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070";
                         @endphp
                         <img src="{{ $mainImg }}" 
-                             class="w-full h-full object-cover" 
+                             class="w-full h-full object-cover opacity-90" 
                              alt="{{ $artikel->judul }}">
                     </div>
 
-                    {{-- Isi Artikel Utama - FIX: MENGGUNAKAN KOLOM 'ISI' --}}
-                    <div class="prose prose-invert prose-orange max-w-none text-slate-300 text-lg leading-relaxed font-medium mb-12 break-words">
+                    {{-- Isi Artikel: Optimasi Tipografi --}}
+                    <div class="prose prose-invert prose-orange max-w-none 
+                            text-slate-300 text-base md:text-lg leading-relaxed 
+                            font-medium mb-16 break-words
+                            {{-- TAMBAHKAN CLASS DI BAWAH INI --}}
+                            prose-p:mb-6 prose-p:leading-relaxed
+                            prose-ul:list-disc prose-ul:ml-6 prose-ul:mb-6
+                            prose-ol:list-decimal prose-ol:ml-6 prose-ol:mb-6
+                            prose-li:mb-2
+                            whitespace-pre-line"> {{-- Menjaga spasi/enter manual --}}
                         {!! $artikel->isi !!}
                     </div>
 
                     {{-- Border Dekoratif Bawah --}}
-                    <div class="border-l-2 border-orange-500/30 pl-8 mt-12">
-                        <p class="text-slate-500 italic text-sm">
-                            Terima kasih telah membaca artikel dari CV Seov Detech. Ikuti terus update terbaru kami.
+                    <div class="border-l-4 border-orange-500 pl-8 py-2 bg-white/5 rounded-r-xl">
+                        <p class="text-slate-400 italic text-sm leading-relaxed">
+                            Artikel ini diterbitkan oleh <span class="text-orange-500 font-bold uppercase">Seov Detech Team</span>. 
+                            Dapatkan informasi teknologi terupdate setiap minggunya.
                         </p>
                     </div>
                 </div>
 
-                {{-- 3. ARTIKEL TERKAIT --}}
+                {{-- 3. ARTIKEL TERKAIT (Tetap di grid, tapi disesuaikan ukurannya agar tidak terlalu besar) --}}
                 <div class="pt-20 border-t border-white/10">
                     <div class="flex items-center justify-between mb-12">
-                        <h3 class="text-xl font-black text-white uppercase tracking-[0.3em]">More Insights</h3>
+                        <h3 class="text-lg font-black text-white uppercase tracking-[0.3em]">More Insights</h3>
                         <div class="h-px flex-1 bg-white/10 ml-8"></div>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        @forelse($artikels as $related)
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        @forelse($artikels->take(3) as $related)
                             <article class="group">
                                 <a href="{{ route('frontend.blog.detail', $related->id) }}" class="block">
-                                    <div class="relative aspect-video rounded-[2rem] overflow-hidden bg-[#111] border border-white/5 mb-6">
+                                    <div class="relative aspect-video rounded-2xl overflow-hidden bg-[#111] border border-white/5 mb-4">
                                         @php
                                             $relImg = ($related->thumbnail && Storage::disk('public')->exists($related->thumbnail)) 
                                                     ? asset('storage/' . $related->thumbnail) 
                                                     : "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070";
                                         @endphp
                                         <img src="{{ $relImg }}" 
-                                             class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
+                                             class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
                                              alt="{{ $related->judul }}">
                                     </div>
-                                    <div class="space-y-2 px-2">
-                                        <span class="text-[10px] font-bold text-orange-500 uppercase tracking-widest">Related Post</span>
-                                        <h4 class="text-white font-bold group-hover:text-orange-500 transition-colors uppercase leading-tight">
+                                    <div class="px-1">
+                                        <h4 class="text-xs font-bold text-white group-hover:text-orange-500 transition-colors uppercase leading-tight line-clamp-2">
                                             {{ $related->judul }}
                                         </h4>
                                     </div>
                                 </a>
                             </article>
                         @empty
-                            @for($i = 1; $i <= 3; $i++)
-                                <div class="opacity-20">
-                                    <div class="aspect-video bg-white/5 rounded-[2rem] mb-4"></div>
-                                    <div class="h-4 w-3/4 bg-white/10 rounded"></div>
-                                </div>
-                            @endfor
+                            <div class="text-slate-600 text-[10px] uppercase tracking-widest">No related posts.</div>
                         @endforelse
                     </div>
                 </div>
-            </div>
+            </div> {{-- End of max-w-3xl --}}
         </div>
     </section>
 </div>
