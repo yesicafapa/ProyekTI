@@ -1,13 +1,35 @@
 <section class="py-24 px-6 lg:px-20 bg-[#0a0a0a] relative overflow-hidden font-['Poppins']">
     
-    {{-- Background Lines --}}
+    {{-- BACKGROUND FRAME (SINKRON DENGAN HERO & LAYANAN) --}}
     <div class="absolute inset-0 z-0 pointer-events-none opacity-30">
-        <svg class="w-full h-full" viewBox="0 0 1920 1080" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 80 H500 L580 20 H1340 L1420 100 H1920" stroke="#F97316" stroke-width="3" opacity="0.4"/>
-            <path d="M0 1000 H700 L780 1060 H1240 L1320 980 H1920" stroke="#F97316" stroke-width="3" opacity="0.4"/>
-            <path d="M40 120 V400 L100 460 V700 L40 760 V960" stroke="#F97316" stroke-width="2.5" opacity="0.3"/>
-            <path d="M1880 120 V300 L1820 360 V750 L1880 810 V960" stroke="#F97316" stroke-width="2.5" opacity="0.3"/>
+        {{-- DESKTOP: Koordinat disamakan agar alur garis menyambung sempurna --}}
+        <svg class="hidden lg:block w-full h-full" viewBox="0 0 1920 1080" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="#F97316" stroke-width="2" vector-effect="non-scaling-stroke">
+                {{-- ATAS: Garis horizontal dengan lekukan --}}
+                <path d="M0 100 H550 L630 20 H1290 L1370 100 H1920" opacity="0.6"/>
+                
+                {{-- KIRI: Berhenti di 980 supaya tidak nembus garis bawah --}}
+                <path d="M15 100 V450 L45 480 V600 L15 630 V980" opacity="0.6" />
+                
+                {{-- KANAN: Berhenti di 980 (Simetris sempurna) --}}
+                <path d="M1905 100 V450 L1875 480 V600 L1905 630 V980" opacity="0.6" />
+
+                {{-- BAWAH: Garis horizontal penutup --}}
+                <path d="M0 980 H550 L630 1060 H1290 L1370 980 H1920" opacity="0.6"/>
+            </g>
         </svg>
+
+        {{-- MOBILE: TETAP SESUAI KODEMU (TIDAK DIRUBAH) --}}
+        <div class="absolute top-0 left-0 right-0 lg:hidden">
+            <svg class="w-full h-[80px]" viewBox="0 0 400 80" preserveAspectRatio="none" fill="none">
+                <path d="M0 60 H120 L150 20 H250 L280 60 H400" stroke="#F97316" stroke-width="2" opacity="0.5"/>
+            </svg>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 lg:hidden">
+            <svg class="w-full h-[80px]" viewBox="0 0 400 80" preserveAspectRatio="none" fill="none">
+                <path d="M0 20 H120 L150 60 H250 L280 20 H400" stroke="#F97316" stroke-width="2" opacity="0.5"/>
+            </svg>
+        </div>
     </div>
 
     <div class="container mx-auto relative z-10">
@@ -17,7 +39,7 @@
             <div class="lg:w-1/2 flex flex-col">
                 <div class="mb-8">
                     <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">Portofolio</h2>
-                    <div class="h-1.5 w-28 bg-orange-500"></div>
+                    <div class="h-1.5 w-28 bg-[#F97316]"></div>
                 </div>
 
                 <div class="bg-[#1a110a] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl h-[650px] flex flex-col">
@@ -33,7 +55,7 @@
                                 <img src="{{ $imgPath }}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500" alt="{{ $portofolio->judul }}">
                             </a>
                             <div class="px-2">
-                                <h3 class="text-white font-bold text-lg group-hover:text-orange-500 transition-colors mb-1 uppercase leading-tight">{{ $portofolio->judul }}</h3>
+                                <h3 class="text-white font-bold text-lg group-hover:text-[#F97316] transition-colors mb-1 uppercase leading-tight">{{ $portofolio->judul }}</h3>
                                 <p class="text-slate-400 text-sm line-clamp-2 italic">{{ $portofolio->deskripsi }}</p>
                             </div>
                         </div>
@@ -50,11 +72,10 @@
             <div class="lg:w-1/2 flex flex-col">
                 <div class="mb-8">
                     <h2 class="text-base font-black tracking-[0.5em] text-white uppercase mb-4">Tech Stack</h2>
-                    <div class="h-1.5 w-28 bg-orange-500"></div>
+                    <div class="h-1.5 w-28 bg-[#F97316]"></div>
                 </div>
 
                 <div class="bg-[#1a110a] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl h-[650px] flex flex-col">
-                    {{-- flex-1 + overflow-y-auto tanpa items-center agar tidak kepotong --}}
                     <div class="flex-1 overflow-y-auto pr-4 custom-scrollbar">
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-y-12 gap-x-8 w-full py-10 px-4">
                             @php
@@ -74,7 +95,7 @@
                             
                             @foreach($techStack as $tech)
                             <a href="{{ $tech['url'] }}" target="_blank" class="flex flex-col items-center group cursor-pointer">
-                                <div class="w-24 h-24 mb-4 flex items-center justify-center p-5 rounded-[2rem] bg-black shadow-2xl border border-white/5 group-hover:border-orange-500 group-hover:scale-110 transition-all duration-500 overflow-hidden">
+                                <div class="w-24 h-24 mb-4 flex items-center justify-center p-5 rounded-[2rem] bg-black shadow-2xl border border-white/5 group-hover:border-[#F97316] group-hover:scale-110 transition-all duration-500 overflow-hidden">
                                     <img src="{{ $tech['img'] }}" class="w-full h-full object-contain filter brightness-90 group-hover:brightness-125">
                                 </div>
                                 <span class="text-xs font-black text-slate-500 group-hover:text-white uppercase tracking-[0.2em] text-center transition-colors">

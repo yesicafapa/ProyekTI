@@ -1,12 +1,36 @@
 <section class="py-24 px-6 lg:px-20 bg-[#0a0a0a] relative overflow-hidden font-['Poppins']">
     
     {{-- Dekorasi Garis Background --}}
-    <div class="absolute inset-0 z-0 pointer-events-none opacity-40">
-        <svg class="w-full h-full" viewBox="0 0 1920 1080" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 80 H500 L580 20 H1340 L1420 100 H1920" stroke="#F97316" stroke-width="3" opacity="0.4"/>
-            <path d="M40 120 V400 L100 460 V700 L40 760 V960" stroke="#F97316" stroke-width="2.5" opacity="0.3"/>
-            <path d="M1880 120 V300 L1820 360 V750 L1880 810 V960" stroke="#F97316" stroke-width="2.5" opacity="0.3"/>
+     {{-- BACKGROUND FRAME (SINKRON DENGAN HERO & LAYANAN) --}}
+    <div class="absolute inset-0 z-0 pointer-events-none opacity-30">
+        {{-- DESKTOP: Koordinat disamakan agar alur garis menyambung sempurna --}}
+        <svg class="hidden lg:block w-full h-full" viewBox="0 0 1920 1080" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="#F97316" stroke-width="2" vector-effect="non-scaling-stroke">
+                {{-- ATAS: Garis horizontal dengan lekukan --}}
+                <path d="M0 100 H550 L630 20 H1290 L1370 100 H1920" opacity="0.6"/>
+                
+                {{-- KIRI: Berhenti di 980 supaya tidak nembus garis bawah --}}
+                <path d="M15 100 V450 L45 480 V600 L15 630 V980" opacity="0.6" />
+                
+                {{-- KANAN: Berhenti di 980 (Simetris sempurna) --}}
+                <path d="M1905 100 V450 L1875 480 V600 L1905 630 V980" opacity="0.6" />
+
+                {{-- BAWAH: Garis horizontal penutup --}}
+                <path d="M0 980 H550 L630 1060 H1290 L1370 980 H1920" opacity="0.6"/>
+            </g>
         </svg>
+
+        {{-- MOBILE: TETAP SESUAI KODEMU (TIDAK DIRUBAH) --}}
+        <div class="absolute top-0 left-0 right-0 lg:hidden">
+            <svg class="w-full h-[80px]" viewBox="0 0 400 80" preserveAspectRatio="none" fill="none">
+                <path d="M0 60 H120 L150 20 H250 L280 60 H400" stroke="#F97316" stroke-width="2" opacity="0.5"/>
+            </svg>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 lg:hidden">
+            <svg class="w-full h-[80px]" viewBox="0 0 400 80" preserveAspectRatio="none" fill="none">
+                <path d="M0 20 H120 L150 60 H250 L280 20 H400" stroke="#F97316" stroke-width="2" opacity="0.5"/>
+            </svg>
+        </div>
     </div>
 
     <div class="container mx-auto relative z-10">

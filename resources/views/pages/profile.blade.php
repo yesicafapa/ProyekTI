@@ -91,7 +91,7 @@
                     <div class="p-10">
                         <div class="mb-8 rounded-2xl bg-blue-50 p-4 dark:bg-blue-900/10">
                             <p class="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                                <i class="mr-2 fas fa-info-circle"></i> Kosongkan password baru jika tidak ingin mengubahnya. Password lama hanya diperlukan untuk konfirmasi perubahan password.
+                                <i class="mr-2 fas fa-info-circle"></i>Kosongkan jika tidak ingin mengubah password.
                             </p>
                         </div>
 
@@ -151,32 +151,75 @@
             }
         });
 
-        // SweetAlert
+        // Ambil data status
         const dataEl = document.getElementById('status-data');
         const successMsg = dataEl.getAttribute('data-success');
         const errorMsg = dataEl.getAttribute('data-error');
         const vErrors = JSON.parse(dataEl.getAttribute('data-errors'));
 
-        const swalConfig = {
+        // Konfigurasi Standar SweetAlert (Black & Orange Style)
+        const toastConfig = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: '#1a1a1a',
+            color: '#ffffff',
+            customClass: {
+                popup: 'rounded-3xl border border-white/10 shadow-2xl',
+                title: 'text-xs font-black uppercase tracking-widest',
+                timerProgressBar: 'bg-orange-500'
+            }
+        });
+
+        const dialogConfig = {
+            background: '#1a1a1a',
+            color: '#ffffff',
             confirmButtonColor: '#f97316',
             customClass: {
-                popup: 'rounded-[2rem]',
-                confirmButton: 'rounded-xl px-10 py-3 uppercase text-[10px] font-black tracking-widest'
+                popup: 'rounded-[2.5rem] border border-white/10 p-10',
+                title: 'text-2xl font-black italic tracking-tighter uppercase',
+                htmlContainer: 'text-[10px] font-bold uppercase tracking-widest text-slate-400',
+                confirmButton: 'rounded-2xl px-12 py-4 text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-orange-500/20'
             }
         };
 
+        // Eksekusi Alert Berdasarkan Status
         if (successMsg) {
-            Swal.fire({ ...swalConfig, icon: 'success', title: 'BERHASIL!', text: successMsg, showConfirmButton: false, timer: 2000 });
+            toastConfig.fire({
+                icon: 'success',
+                iconColor: '#f97316',
+                title: 'PROFIL BERHASIL DIPERBARUI'
+            });
         }
+
         if (errorMsg) {
-            Swal.fire({ ...swalConfig, icon: 'error', title: 'GAGAL!', text: errorMsg });
+            Swal.fire({
+                ...dialogConfig,
+                icon: 'error',
+                iconColor: '#ef4444',
+                title: 'UPDATE GAGAL!',
+                text: errorMsg
+            });
         }
+
         if (vErrors.length > 0 && !errorMsg) {
-            Swal.fire({ 
-                ...swalConfig, 
-                icon: 'warning', 
-                title: 'CEK INPUTAN', 
-                html: `<ul class="text-left text-[10px] font-bold uppercase space-y-1">${vErrors.map(e => `<li>- ${e}</li>`).join('')}</ul>` 
+            Swal.fire({
+                ...dialogConfig,
+                icon: 'warning',
+                iconColor: '#f97316',
+                title: 'PERIKSA KEMBALI',
+                html: `
+                    <div class="mt-6 space-y-2 text-left">
+                        ${vErrors.map(e => `
+                            <div class="flex items-center gap-3 rounded-xl bg-white/5 p-3 border border-white/5">
+                                <span class="h-1.5 w-1.5 rounded-full bg-orange-500"></span>
+                                <span class="text-[9px] font-black uppercase tracking-widest text-slate-300">${e}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `
             });
         }
     });
