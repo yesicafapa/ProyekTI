@@ -74,8 +74,13 @@
                                         {{ $item->judul }}
                                     </div>
                                     <div class="flex items-center gap-2 text-[12px] font-medium">
-                                        <span class="text-blue-500 font-bold uppercase tracking-wider text-[11px]">Admin</span>
+                                        <span class="text-orange-500 font-bold uppercase tracking-wider text-[11px]">
+                                            {{ $item->user->nama ?? 'Admin' }}
+                                        </span>
                                         <span class="text-slate-300 dark:text-slate-700">•</span>
+                                        <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+                                            <span>{{ $item->updated_at->format('d M Y') }}</span>
+                                        </div>
                                         <a href="{{ $item->url }}" target="_blank" class="text-slate-500 dark:text-slate-400 hover:text-orange-500 underline underline-offset-4">
                                             {{ Str::limit($item->url, 40) }}
                                         </a>

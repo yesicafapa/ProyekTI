@@ -2,19 +2,20 @@
 @import 'prismjs/themes/prism.min.css';
 @import 'tailwindcss';
 
-/* Lokasi file blade agar Tailwind memproses class-nya */
+/* Lokasi file agar Tailwind v4 memproses class-nya */
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+/* --- FIX DARK MODE VARIANT (Tailwind v4 Standard) --- */
 @custom-variant dark (&:is(.dark *));
 
 @theme {
   --font-*: initial;
   --font-poppins: Poppins, sans-serif;
 
-  /* --- PALET WARNA ORANGE SEOV DETECH --- */
+  /* --- PALET WARNA ORANGE SEOVDETECH --- */
   --color-brand-50: #fff6ed;
   --color-brand-100: #ffead5;
   --color-brand-200: #fddcab;
@@ -27,7 +28,7 @@
   --color-brand-900: #7e2410;
   --color-brand-950: #511c10;
 
-  /* Tambahan: Paksa warna primary/blue sistem ke Orange */
+  /* Paksa warna biru sistem ke Orange */
   --color-blue-500: #fb6514;
   --color-primary-500: #fb6514;
 
@@ -42,39 +43,44 @@
 @layer base {
   *, ::after, ::before {
     border-color: var(--color-gray-200, currentColor);
-    /* Hilangkan kilatan biru saat elemen diklik di mobile */
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Menghapus warna biru bawaan browser saat teks diblok */
+  /* Selection Orange */
   ::selection {
     background-color: var(--color-brand-500);
     color: white;
   }
 
   body {
-    /* Ganti bg-gray-50 ke white agar lebih clean dan tidak kebiruan */
-    @apply relative font-normal font-poppins z-1 bg-white text-slate-900 dark:text-white dark:bg-[#0a0a0a];
-    
-    /* Paksa warna aksen form (checkbox/radio) jadi orange */
+    /* DEFAULT: Gunakan dark mode jika class .dark ada di html */
+    @apply relative font-normal font-poppins bg-white text-slate-900 transition-colors duration-500;
     accent-color: var(--color-brand-500);
   }
 
-  /* Hilangkan outline biru fokus dan ganti jadi orange */
+  /* Paksa Body jadi hitam saat .dark aktif */
+  .dark body {
+    @apply bg-[#0a0a0a] text-white;
+  }
+
   :focus-visible {
     outline: 2px solid var(--color-brand-500) !important;
     outline-offset: 2px;
   }
 }
 
-/* --- TOMBOL UTAMA --- */
+/* --- UTILITIES --- */
 @utility btn-primary {
   @apply bg-brand-500 text-white hover:bg-brand-600 py-2.5 px-6 rounded-2xl font-bold transition-all shadow-lg shadow-brand-500/20 active:scale-95 flex items-center justify-center gap-2;
 }
 
-/* --- SIDEBAR & MENU NAVIGATION --- */
 @utility menu-item-active {
-  @apply bg-brand-500/10 text-brand-500 border-r-4 border-brand-500 font-bold dark:bg-brand-500/20;
+  @apply bg-brand-500/10 text-brand-500 border-r-4 border-brand-500 font-bold;
+}
+
+/* Tambahan: Menu item active di dark mode */
+.dark .menu-item-active {
+  @apply bg-brand-500/20 text-brand-500;
 }
 
 @utility menu-item-icon-active {
@@ -86,7 +92,7 @@
   @apply border-brand-500 bg-brand-500;
 }
 
-/* --- NPROGRESS (Garis Loading Atas) --- */
+/* --- NPROGRESS --- */
 #nprogress .bar {
   background: var(--color-brand-500) !important;
   height: 3px !important;
