@@ -9,9 +9,9 @@ use App\Http\Controllers\Admin\{
 };
 
 /*
-|--------------------------------------------------------------------------
-| 1. FRONTEND ROUTES (Sisi Pengunjung)
-|--------------------------------------------------------------------------
+|--------------------------------------------------
+| 1. FRONTEND ROUTES (Sisi Pengunjung) - URL
+|--------------------------------------------------
 */
 
 // Halaman Home Utama
@@ -24,10 +24,9 @@ Route::get('/', function () {
     return view('pages.frontend.index', compact('artikels', 'portofolios', 'faqs', 'testimonis'));
 })->name('home');
 
-// --- START FRONTEND GROUP ---
-Route::prefix('frontend')->name('frontend.')->group(function () {
+Route::name('frontend.')->group(function () {
     
-    // List Portofolio
+    // List Portofolio -> URL 
     Route::get('/portofolio', function () {
         $portofolios = \App\Models\Portofolio::latest()->get();
         $artikels = \App\Models\Artikel::where('status', 1)->latest()->take(3)->get(); 
@@ -36,7 +35,7 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
         return view('pages.frontend.sections.portfolio', compact('portofolios', 'artikels', 'testimonis', 'faqs'));
     })->name('portofolio.index');
 
-    // Detail Portofolio
+    // Detail Portofolio -> URL 
     Route::get('/portofolio/{id}', function ($id) {
         $portofolio = \App\Models\Portofolio::findOrFail($id);
         $portofolios = \App\Models\Portofolio::latest()->get(); 
@@ -49,13 +48,13 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
         ));
     })->name('portofolio.detail');
 
-    // List Blog
+    // List Blog -> URL 
     Route::get('/blog', function () {
         $artikels = \App\Models\Artikel::where('status', 1)->latest()->paginate(9);
         return view('pages.frontend.sections.blog', compact('artikels'));
     })->name('blog.index');
 
-    // Detail Blog
+    // Detail Blog -> URL 
     Route::get('/blog/{id}', function ($id) {
         $artikel = \App\Models\Artikel::findOrFail($id);
         $artikels = \App\Models\Artikel::where('id', '!=', $id)
@@ -67,14 +66,14 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
         return view('pages.frontend.sections.blog_detail', compact('artikel', 'artikels'));
     })->name('blog.detail');
 
-    // Halaman Kontak (Tampilan)
+    // Halaman Kontak
     Route::get('/contact-us', function () {
         $testimonis = \App\Models\Testimoni::where('status', 1)->latest()->get();
         $artikels = \App\Models\Artikel::where('status', 1)->latest()->take(3)->get();
         return view('pages.frontend.sections.contact', compact('testimonis', 'artikels'));
     })->name('contact');
 
-    // Proses Kirim Pesan (Manggil Controller)
+    // Proses Kirim Pesan
     Route::post('/contact-send', [ContactController::class, 'send'])->name('contact.send');
 
     // Halaman Sukses
@@ -110,7 +109,6 @@ Route::middleware(['auth'])->prefix('management')->group(function () {
 
     // --- USER MANAGEMENT ---
     Route::resource('user-management', UserController::class)->names('user-management');
-    // Tambahan Route Toggle Status (Tanpa mengubah resource di atas)
     Route::patch('/user-management/{id}/toggle', [UserController::class, 'toggleStatus'])->name('user-management.toggle');
    
     Route::resource('artikel', ArtikelController::class)->except(['show']);
