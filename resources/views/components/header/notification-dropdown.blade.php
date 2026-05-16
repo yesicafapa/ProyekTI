@@ -1,6 +1,6 @@
 <div class="relative" x-data="{
     dropdownOpen: false,
-    notifying: {{ $unreadCount > 0 ? 'true' : 'false' }},
+    notifying: {{ ($unreadCount ?? 0) > 0 ? 'true' : 'false' }},
     toggleDropdown() {
         this.dropdownOpen = !this.dropdownOpen;
         this.notifying = false;
@@ -42,34 +42,35 @@
         <div class="flex items-center justify-between pb-4 mb-2 border-b border-gray-100 dark:border-white/5">
             <h5 class="text-base font-black uppercase tracking-widest text-gray-800 dark:text-white">Pesan Masuk</h5>
             <span class="rounded-full bg-orange-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-orange-500 border border-orange-500/10">
-                {{ $unreadCount }} Baru
+                {{ $unreadCount ?? 0 }} Baru
             </span>
         </div>
 
         {{-- Scrollable List --}}
         <ul class="flex-1 overflow-y-auto pr-1 custom-scrollbar">
-            @forelse ($notifications as $notif)
+            {{-- Menggunakan collect() untuk mencegah crash jika $notifications lupa dikirim atau null --}}
+            @forelse (collect($notifications ?? []) as $notif)
                 <li class="mb-1 last:mb-0">
                     <a class="group flex gap-4 rounded-2xl p-3 transition-all hover:bg-gray-50 dark:hover:bg-white/5" 
                        href="{{ route('contact.index') }}">
                         
                         {{-- Initial Avatar --}}
                         <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-orange-500 text-sm font-black text-white shadow-lg shadow-orange-500/20 transition-transform group-hover:scale-110">
-                            {{ strtoupper(substr($notif->nama, 0, 1)) }}
+                            {{ strtoupper(substr($notif->nama ?? 'U', 0, 1)) }}
                         </div>
 
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center justify-between mb-0.5">
                                 <span class="truncate text-[13px] font-black uppercase tracking-tight text-gray-900 dark:text-white group-hover:text-orange-500 transition-colors">
-                                    {{ $notif->nama }}
+                                    {{ $notif->nama ?? 'Unknown' }}
                                 </span>
                                 <span class="flex-shrink-0 text-[10px] font-bold text-gray-400 dark:text-gray-500">
-                                    {{ $notif->created_at->diffForHumans(null, true) }}
+                                    {{ isset($notif->created_at) ? $notif->created_at->diffForHumans(null, true) : '-' }}
                                 </span>
                             </div>
                             
                             <p class="truncate text-xs font-medium text-gray-500 dark:text-gray-400">
-                                "{{ $notif->pesan }}"
+                                "{{ $notif->pesan ?? '' }}"
                             </p>
 
                             <div class="mt-2 flex items-center gap-1.5">
@@ -99,7 +100,7 @@
                 <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                     <path d="M5 12h14m-7-7l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-            </a>
+            </a> 
         </div>
     </div>
 </div>

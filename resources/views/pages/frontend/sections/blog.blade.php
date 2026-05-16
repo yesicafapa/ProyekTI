@@ -3,7 +3,7 @@
 @section('content')
 <div class="bg-[#0a0a0a] min-h-screen font-['Poppins'] text-white pt-20">
     {{-- SECTION DENGAN TINGGI LEBIH LUAS --}}
-    <section class="relative h-[170vh] py-10 px-6 lg:px-20 overflow-hidden">
+    <section class="relative h-[165vh] py-10 px-6 lg:px-20 overflow-hidden">
         {{-- Dekorasi Garis Background --}}
         <div class="absolute inset-0 z-0 pointer-events-none opacity-30">
             <svg class="hidden lg:block w-full h-full" viewBox="0 0 1920 1080" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -18,7 +18,7 @@
                     <path d="M0 980 H550 L630 1060 H1290 L1370 980 H1920" opacity="0.6"/>
                 </g>
             </svg>
-            {{-- MOBILE: TETAP SESUAI KODEMU (TIDAK DIRUBAH) --}}
+            {{-- MOBILE --}}
         <div class="absolute top-0 left-0 right-0 lg:hidden">
             <svg class="w-full h-[80px]" viewBox="0 0 400 80" preserveAspectRatio="none" fill="none">
                 <path d="M0 60 H120 L150 20 H250 L280 60 H400" stroke="#F97316" stroke-width="2" opacity="0.5"/>
@@ -36,7 +36,7 @@
             {{-- 2. Container --}}
             <div class="container mx-auto relative z-10 max-w-4xl h-full flex flex-col pt-8"> {{-- Tambah pt-8 di sini --}}
                 
-                {{-- Header: Kasih mt-6 supaya jarak ke garis atas lebih lega --}}
+                {{-- Header --}}
                 <div class="shrink-0 mb-8 mt-6"> 
                     <a href="{{ url('/') }}" class="inline-flex items-center gap-3 text-orange-500 hover:text-white transition-colors group mb-6">
                         <span class="text-lg group-hover:-translate-x-2 transition-transform">←</span>
